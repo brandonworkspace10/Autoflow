@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blog — Autoflow</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.5.0/dist/tabler-icons.min.css" />
+
+<script>
+  (function () {
+    try {
+      if (!localStorage.getItem('autoflow.themeVersion')) {
+        localStorage.removeItem('autoflow.theme');
+        localStorage.setItem('autoflow.themeVersion', '2');
+      }
+      const saved = localStorage.getItem('autoflow.theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    } catch (e) {}
+  })();
+</script>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f6f5f1;
+    --color-background-tertiary: #efece4;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #6b6760;
+    --color-text-tertiary: #9a958c;
+    --color-border-primary: #d8d4cb;
+    --color-border-secondary: #e3dfd6;
+    --color-border-tertiary: #ece8df;
+    --accent: #FF4D00;
+    --accent-soft: rgba(255, 77, 0, 0.08);
+    --accent2: #0066FF;
+    --ink: #1a1a1a;
+    --on-ink: #ffffff;
+    --shadow-card-color: rgba(20, 18, 14, 0.04);
+    --shadow-hover-color: rgba(20, 18, 14, 0.06);
+  }
+  [data-theme="dark"] {
+    --color-background-primary: #14110d;
+    --color-background-secondary: #1c1814;
+    --color-background-tertiary: #24201a;
+    --color-text-primary: #f6f4ef;
+    --color-text-secondary: #a09a8e;
+    --color-text-tertiary: #6b6760;
+    --color-border-primary: #3a342c;
+    --color-border-secondary: #2a251f;
+    --color-border-tertiary: #221e18;
+    --accent-soft: rgba(255, 77, 0, 0.14);
+    --ink: #f6f4ef;
+    --on-ink: #14110d;
+    --shadow-card-color: rgba(0, 0, 0, 0.4);
+    --shadow-hover-color: rgba(0, 0, 0, 0.5);
+  }
+  :root {
+    --serif: 'Instrument Serif', 'Times New Roman', serif;
+    --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  html, body { background: var(--color-background-primary); }
+  body {
+    font-family: var(--sans); color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .page { max-width: 1320px; margin: 0 auto; background: var(--color-background-primary); }
+
+  /* Nav */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 2.25rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .logo { font-family: var(--serif); font-size: 24px; letter-spacing: -0.5px; cursor: pointer; }
+  .logo span { color: var(--accent); font-style: italic; }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; color: var(--color-text-secondary); list-style: none; }
+  .nav-links li { cursor: pointer; transition: color 0.15s; }
+  .nav-links li:hover, .nav-links li.active { color: var(--color-text-primary); }
+  .nav-links li.active { font-weight: 500; }
+  .nav-right { display: flex; gap: 10px; }
+  .btn-ghost {
+    font-size: 13px; padding: 7px 16px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 999px; background: transparent;
+    color: var(--color-text-primary); cursor: pointer;
+  }
+  .btn-ghost:hover { background: var(--color-background-secondary); }
+  .btn-solid {
+    font-size: 13px; font-weight: 500; padding: 7px 16px;
+    border: none; border-radius: 999px;
+    background: var(--ink); color: var(--on-ink); cursor: pointer;
+  }
+  .btn-solid:hover { filter: brightness(1.15); }
+
+  /* Crumbs + header */
+  .crumbs {
+    padding: 1.5rem 2.25rem 0;
+    font-size: 11px; color: var(--color-text-tertiary);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .crumbs a:hover { color: var(--color-text-primary); }
+  .crumbs .sep { margin: 0 8px; opacity: 0.5; }
+
+  .head {
+    padding: 1.5rem 2.25rem 2rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: end;
+  }
+  .head-title {
+    font-family: var(--serif); font-size: 48px;
+    letter-spacing: -1.4px; line-height: 1;
+  }
+  .head-title em { font-style: italic; color: var(--accent); }
+  .head-sub {
+    margin-top: 0.7rem; font-size: 14px;
+    color: var(--color-text-secondary); max-width: 500px;
+  }
+  .head-cats {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    align-items: center;
+  }
+  .cat-chip {
+    font-size: 12px; padding: 6px 13px;
+    border-radius: 999px;
+    border: 0.5px solid var(--color-border-secondary);
+    background: transparent; color: var(--color-text-secondary);
+    cursor: pointer; transition: all 0.12s;
+  }
+  .cat-chip:hover { color: var(--color-text-primary); border-color: var(--color-border-primary); }
+  .cat-chip.active { background: var(--ink); color: var(--on-ink); border-color: transparent; }
+
+  /* Featured article */
+  .featured {
+    padding: 2.5rem 2.25rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: grid; grid-template-columns: 1.1fr 1fr;
+    gap: 2.5rem; align-items: center;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .featured:hover { background: var(--color-background-secondary); }
+  .feat-cover {
+    aspect-ratio: 4 / 3;
+    border-radius: 18px;
+    background:
+      radial-gradient(120% 100% at 30% 20%, rgba(255,77,0,0.35) 0%, transparent 60%),
+      radial-gradient(80% 80% at 80% 80%, rgba(0,102,255,0.18) 0%, transparent 60%),
+      var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-secondary);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .feat-cover .glyph {
+    font-size: 120px;
+    color: rgba(255, 77, 0, 0.85);
+    transform: rotate(-8deg);
+  }
+  .feat-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .feat-title {
+    font-family: var(--serif); font-size: 44px;
+    letter-spacing: -1.2px; line-height: 1.05;
+    color: var(--color-text-primary);
+    text-wrap: balance;
+    margin-bottom: 1rem;
+  }
+  .feat-title em { font-style: italic; color: var(--accent); }
+  .feat-excerpt {
+    font-size: 16px; color: var(--color-text-secondary);
+    line-height: 1.55; max-width: 480px;
+    text-wrap: pretty;
+    margin-bottom: 1.5rem;
+  }
+  .feat-meta {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; color: var(--color-text-secondary);
+  }
+  .feat-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 600; font-size: 11px;
+  }
+
+  /* Grid */
+  .grid {
+    padding: 2.5rem 2.25rem 3rem;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+  }
+  .post {
+    display: flex; flex-direction: column;
+    cursor: pointer;
+    border-radius: 14px;
+    padding: 0.5rem;
+    margin: -0.5rem;
+    transition: background 0.15s;
+  }
+  .post:hover { background: var(--color-background-secondary); }
+  .post-cover {
+    aspect-ratio: 16 / 10;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    border: 0.5px solid var(--color-border-secondary);
+  }
+  .post-cover .glyph {
+    font-size: 56px;
+    opacity: 0.85;
+    transform: rotate(-6deg);
+  }
+  .post-cat {
+    font-size: 11px; letter-spacing: 0.04em;
+    color: var(--color-text-tertiary);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .post-cat strong { color: var(--accent); font-weight: 500; }
+  .post-title {
+    font-family: var(--serif); font-size: 22px;
+    letter-spacing: -0.6px; line-height: 1.15;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+    text-wrap: balance;
+  }
+  .post-excerpt {
+    font-size: 13.5px; color: var(--color-text-secondary);
+    line-height: 1.55; margin-bottom: 1rem;
+    text-wrap: pretty;
+    flex: 1;
+  }
+  .post-meta {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--color-text-tertiary);
+  }
+  .post-avatar {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 600; font-size: 9px;
+  }
+
+  /* Newsletter strip */
+  .nl-strip {
+    margin: 0 2.25rem 3rem;
+    padding: 2.5rem;
+    border-radius: 18px;
+    background:
+      radial-gradient(120% 100% at 100% 0%, rgba(255,77,0,0.10) 0%, transparent 55%),
+      var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-secondary);
+    display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: center;
+  }
+  .nl-title {
+    font-family: var(--serif); font-size: 32px;
+    letter-spacing: -0.8px; line-height: 1.1;
+    color: var(--color-text-primary);
+    text-wrap: balance;
+  }
+  .nl-title em { font-style: italic; color: var(--accent); }
+  .nl-sub {
+    margin-top: 0.5rem;
+    font-size: 14px; color: var(--color-text-secondary);
+  }
+  .nl-form {
+    display: flex; gap: 0;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 999px;
+    padding: 4px 4px 4px 18px;
+    min-width: 320px;
+  }
+  .nl-form:focus-within { border-color: var(--accent); }
+  .nl-form input {
+    flex: 1; border: none; outline: none;
+    background: transparent; color: var(--color-text-primary);
+    font-family: var(--sans); font-size: 13px;
+  }
+  .nl-form input::placeholder { color: var(--color-text-tertiary); }
+  .nl-form button {
+    border: none; cursor: pointer;
+    background: var(--ink); color: var(--on-ink);
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    padding: 9px 18px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .nl-form button:hover { filter: brightness(1.15); }
+
+  /* Footer slot — handled by autoflow-shared.js */
+  .footer { padding: 1rem; }
+
+  @media (max-width: 980px) {
+    .featured { grid-template-columns: 1fr; }
+    .feat-cover { aspect-ratio: 16 / 9; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .head { grid-template-columns: 1fr; }
+    .nl-strip { grid-template-columns: 1fr; }
+    .nl-form { min-width: 0; width: 100%; }
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+    .nav, .crumbs, .head, .featured, .grid { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .nl-strip { margin-left: 1.25rem; margin-right: 1.25rem; padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <nav class="nav">
+    <a class="logo" href="Autoflow Marketplace.html">Auto<span>flow</span></a>
+    <ul class="nav-links">
+      <li><a href="Browse Workflows.html">Browse</a></li>
+      <li><a href="Creators.html">Creators</a></li>
+      <li>Pricing</li>
+      <li class="active">Blog</li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-ghost">Sign in</button>
+      <button class="btn-solid">Get started</button>
+    </div>
+  </nav>
+
+  <div class="crumbs"><a href="Autoflow Marketplace.html">Home</a> <span class="sep">·</span> Blog</div>
+
+  <header class="head">
+    <div>
+      <h1 class="head-title">Field notes from <em>real operators</em></h1>
+      <p class="head-sub">Tactics, postmortems, and behind-the-scenes from the people building automations on Autoflow.</p>
+    </div>
+    <div class="head-cats" id="head-cats"></div>
+  </header>
+
+  <article class="featured" id="featured"></article>
+
+  <main class="grid" id="grid"></main>
+
+  <section class="nl-strip">
+    <div>
+      <div class="nl-title">Get the <em>weekly digest</em></div>
+      <div class="nl-sub">One email every Friday. New workflows, creator interviews, the occasional rant. No spam.</div>
+    </div>
+    <form class="nl-form" id="nl-form">
+      <input type="email" placeholder="you@company.com" required />
+      <button type="submit">Subscribe <i class="ti ti-arrow-right"></i></button>
+    </form>
+  </section>
+
+  <footer class="footer"></footer>
+</div>
+
+<script>
+const POSTS = [
+  {
+    id: 1, cat: 'Playbook', glyph: 'ti-mail-forward',
+    color1: '#FF4D00', color2: '#0066FF',
+    title: 'How we cut sales response time from 4 hours to 90 seconds',
+    excerpt: 'A teardown of the AI-classifier workflow that now handles every inbound lead at our agency — and the three rules we use to keep it from going off the rails.',
+    author: 'Jake Rivera', initials: 'JR', avColor: '#FF4D00',
+    date: 'May 14, 2026', readTime: '6 min', featured: true,
+  },
+  {
+    id: 2, cat: 'Creator interview', glyph: 'ti-robot',
+    color1: '#0066FF', color2: '#7c3aed',
+    title: 'Aisha Lema on shipping AI workflows that survive prod',
+    excerpt: 'The Lagos-based creator built one of the most-installed LinkedIn automation flows on Autoflow. We talked about prompt drift, fallbacks, and why she still hand-tests every release.',
+    author: 'Maya Chen', initials: 'MC', avColor: '#db2777',
+    date: 'May 11, 2026', readTime: '8 min',
+  },
+  {
+    id: 3, cat: 'Tactics', glyph: 'ti-credit-card',
+    color1: '#16a34a', color2: '#0066FF',
+    title: 'The 3-email Stripe dunning sequence that recovers 41% of failed payments',
+    excerpt: 'Most failed-payment recovery flows are too aggressive on day one and silent by day 14. Here is the cadence and copy we landed on after testing 9 variations.',
+    author: 'Tara Novak', initials: 'TN', avColor: '#16a34a',
+    date: 'May 7, 2026', readTime: '5 min',
+  },
+  {
+    id: 4, cat: 'Postmortem', glyph: 'ti-alert-triangle',
+    color1: '#db2777', color2: '#b45309',
+    title: 'I had a Shopify workflow loop send 14,000 emails. Here is the fix.',
+    excerpt: 'A recursion bug, a missing guard rail, and one very irritated client base. The full postmortem plus the cheap circuit breaker pattern I now ship with every flow.',
+    author: 'Dev Singh', initials: 'DS', avColor: '#FF4D00',
+    date: 'May 3, 2026', readTime: '7 min',
+  },
+  {
+    id: 5, cat: 'Playbook', glyph: 'ti-notebook',
+    color1: '#7c3aed', color2: '#FF4D00',
+    title: 'Turning Fireflies transcripts into action items with one prompt',
+    excerpt: 'A walkthrough of the meeting-notes workflow that quietly became the most-used flow on my team — and the prompt template you can lift wholesale.',
+    author: 'Omar Hassan', initials: 'OH', avColor: '#0d9488',
+    date: 'Apr 30, 2026', readTime: '4 min',
+  },
+  {
+    id: 6, cat: 'Economics', glyph: 'ti-coin',
+    color1: '#FF4D00', color2: '#16a34a',
+    title: 'I made $11,400 on Autoflow in 90 days. Here is what worked.',
+    excerpt: 'No huge audience, no paid ads. Just three good workflows priced well, plus the small launch playbook I used for each — what beat my expectations and what flopped.',
+    author: 'Marcus Kim', initials: 'MK', avColor: '#7c3aed',
+    date: 'Apr 26, 2026', readTime: '9 min',
+  },
+  {
+    id: 7, cat: 'Tactics', glyph: 'ti-search',
+    color1: '#b45309', color2: '#FF4D00',
+    title: 'A weekly competitor price monitor in 30 minutes',
+    excerpt: 'Build the exact workflow we use to scrape competitor pricing pages, diff them, and ping Slack with a clean digest every Monday morning.',
+    author: 'Priya Walsh', initials: 'PW', avColor: '#0066FF',
+    date: 'Apr 22, 2026', readTime: '6 min',
+  },
+];
+
+const CATEGORIES = ['All', 'Playbook', 'Tactics', 'Creator interview', 'Postmortem', 'Economics'];
+let activeCat = 'All';
+
+// Build category chips
+const catsWrap = document.getElementById('head-cats');
+CATEGORIES.forEach(c => {
+  const el = document.createElement('button');
+  el.className = 'cat-chip' + (c === activeCat ? ' active' : '');
+  el.textContent = c;
+  el.addEventListener('click', () => {
+    activeCat = c;
+    document.querySelectorAll('.cat-chip').forEach(x => x.classList.toggle('active', x.textContent === c));
+    render();
+  });
+  catsWrap.appendChild(el);
+});
+
+function coverStyle(color1, color2) {
+  return `background:
+    radial-gradient(120% 100% at 25% 25%, ${color1}55 0%, transparent 60%),
+    radial-gradient(80% 80% at 75% 75%, ${color2}33 0%, transparent 60%),
+    var(--color-background-secondary)`;
+}
+
+function featuredHTML(p) {
+  return `
+    <div class="feat-cover" style="${coverStyle(p.color1, p.color2)}">
+      <i class="ti ${p.glyph} glyph" style="color:${p.color1}"></i>
+    </div>
+    <div>
+      <div class="feat-eyebrow"><i class="ti ti-star-filled" style="font-size:10px"></i> Featured · ${p.cat}</div>
+      <h2 class="feat-title">${p.title}</h2>
+      <p class="feat-excerpt">${p.excerpt}</p>
+      <div class="feat-meta">
+        <div class="feat-avatar" style="background:${p.avColor}">${p.initials}</div>
+        <strong style="color:var(--color-text-primary);font-weight:500">${p.author}</strong>
+        <span>·</span>
+        <span>${p.date}</span>
+        <span>·</span>
+        <span>${p.readTime} read</span>
+      </div>
+    </div>
+  `;
+}
+
+function postHTML(p) {
+  return `
+    <div class="post-cover" style="${coverStyle(p.color1, p.color2)}">
+      <i class="ti ${p.glyph} glyph" style="color:${p.color1}"></i>
+    </div>
+    <div class="post-cat"><strong>${p.cat}</strong></div>
+    <div class="post-title">${p.title}</div>
+    <div class="post-excerpt">${p.excerpt}</div>
+    <div class="post-meta">
+      <div class="post-avatar" style="background:${p.avColor}">${p.initials}</div>
+      <span>${p.author}</span>
+      <span>·</span>
+      <span>${p.date}</span>
+      <span>·</span>
+      <span>${p.readTime}</span>
+    </div>
+  `;
+}
+
+function render() {
+  const list = activeCat === 'All'
+    ? POSTS
+    : POSTS.filter(p => p.cat === activeCat);
+
+  const featured = list.find(p => p.featured) || list[0];
+  const rest = list.filter(p => p !== featured);
+
+  document.getElementById('featured').innerHTML = featured ? featuredHTML(featured) : '';
+  document.getElementById('featured').style.display = featured ? 'grid' : 'none';
+
+  const grid = document.getElementById('grid');
+  if (rest.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;padding:3rem;text-align:center;color:var(--color-text-tertiary);font-size:14px">No more articles in this category yet.</div>`;
+    return;
+  }
+  grid.innerHTML = rest.map(p => `<article class="post">${postHTML(p)}</article>`).join('');
+}
+
+render();
+
+// Newsletter
+document.getElementById('nl-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const input = e.target.querySelector('input');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) { input.focus(); return; }
+  const btn = e.target.querySelector('button');
+  btn.innerHTML = '<i class="ti ti-check"></i> Subscribed';
+  input.readOnly = true;
+  input.value = '';
+  input.placeholder = `You're on the list — see you Friday`;
+});
+</script>
+
+<script src="browse-data.js"></script>
+<script src="creators-data.js"></script>
+<script src="autoflow-shared.js"></script>
+</body>
+</html>

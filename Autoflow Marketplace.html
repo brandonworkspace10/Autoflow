@@ -1,0 +1,1324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autoflow — Automation workflow marketplace</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.5.0/dist/tabler-icons.min.css" />
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Neutral surface palette */
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f6f5f1;
+    --color-background-tertiary: #efece4;
+
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #6b6760;
+    --color-text-tertiary: #9a958c;
+
+    --color-border-primary: #d8d4cb;
+    --color-border-secondary: #e3dfd6;
+    --color-border-tertiary: #ece8df;
+
+    /* Brand */
+    --accent: #FF4D00;
+    --accent-soft: rgba(255, 77, 0, 0.08);
+    --accent2: #0066FF;
+    --ink: #1a1a1a;
+    --on-ink: #ffffff;
+
+    --cta-gradient: radial-gradient(120% 100% at 100% 0%, rgba(255,77,0,0.05) 0%, transparent 50%);
+    --shadow-card-color: rgba(20, 18, 14, 0.04);
+    --shadow-hover-color: rgba(20, 18, 14, 0.06);
+  }
+
+  [data-theme="dark"] {
+    --color-background-primary: #14110d;
+    --color-background-secondary: #1c1814;
+    --color-background-tertiary: #24201a;
+
+    --color-text-primary: #f6f4ef;
+    --color-text-secondary: #a09a8e;
+    --color-text-tertiary: #6b6760;
+
+    --color-border-primary: #3a342c;
+    --color-border-secondary: #2a251f;
+    --color-border-tertiary: #221e18;
+
+    --accent-soft: rgba(255, 77, 0, 0.14);
+    --ink: #f6f4ef;
+    --on-ink: #14110d;
+
+    --cta-gradient: radial-gradient(120% 100% at 100% 0%, rgba(255,77,0,0.10) 0%, transparent 50%);
+    --shadow-card-color: rgba(0, 0, 0, 0.4);
+    --shadow-hover-color: rgba(0, 0, 0, 0.5);
+  }
+
+  :root {
+    --serif: 'Instrument Serif', 'Times New Roman', serif;
+    --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    --shadow-card: 0 1px 0 var(--shadow-card-color), 0 1px 2px var(--shadow-card-color);
+    --shadow-hover: 0 4px 14px var(--shadow-hover-color), 0 1px 2px var(--shadow-card-color);
+  }
+
+  html, body { background: var(--color-background-primary); }
+  body {
+    font-family: var(--sans);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+
+  .page {
+    max-width: 1320px;
+    margin: 0 auto;
+    background: var(--color-background-primary);
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0;
+    margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
+    white-space: nowrap; border: 0;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 2.25rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .logo {
+    font-family: var(--serif);
+    font-size: 24px;
+    color: var(--color-text-primary);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--accent); font-style: italic; }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    list-style: none;
+  }
+  .nav-links li { cursor: pointer; transition: color 0.15s; }
+  .nav-links li:hover { color: var(--color-text-primary); }
+  .nav-right { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost {
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 7px 16px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn-ghost:hover { background: var(--color-background-secondary); border-color: var(--color-border-primary); }
+  .btn-solid {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 16px;
+    border: none;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--on-ink);
+    cursor: pointer;
+    transition: transform 0.12s, filter 0.15s;
+  }
+  .btn-solid:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 4rem 2.25rem 3rem;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 5px 11px;
+    border-radius: 999px;
+    margin-bottom: 1.4rem;
+  }
+  .hero-tag .pulse {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(255, 77, 0, 0.4); }
+    70%  { box-shadow: 0 0 0 6px rgba(255, 77, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 77, 0, 0); }
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(40px, 5vw, 56px);
+    line-height: 1.02;
+    color: var(--color-text-primary);
+    letter-spacing: -1.5px;
+    margin-bottom: 1.2rem;
+    text-wrap: balance;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    max-width: 420px;
+    margin-bottom: 2rem;
+    text-wrap: pretty;
+  }
+  .hero-ctas { display: flex; gap: 12px; align-items: center; }
+  .btn-hero {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--on-ink);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.12s, filter 0.15s;
+  }
+  .btn-hero:hover { filter: brightness(1.15); transform: translateY(-1px); }
+  .btn-hero-ghost {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--color-text-primary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 16px;
+  }
+  .btn-hero-ghost:hover { color: var(--accent); }
+
+  .hero-right {
+    background: var(--color-background-secondary);
+    border-radius: 18px;
+    border: 0.5px solid var(--color-border-secondary);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    position: relative;
+  }
+  .hero-card-header {
+    padding: 13px 16px;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    background: var(--color-background-primary);
+  }
+  .hero-card-header .meta {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255, 77, 0, 0.15);
+  }
+  .flow-preview {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .flow-step {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 11px 13px;
+    background: var(--color-background-primary);
+    border-radius: 11px;
+    border: 0.5px solid var(--color-border-tertiary);
+    box-shadow: var(--shadow-card);
+  }
+  .flow-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .flow-icon.orange { background: rgba(255,77,0,0.10); color: var(--accent); }
+  .flow-icon.blue   { background: rgba(0,102,255,0.10); color: var(--accent2); }
+  .flow-icon.green  { background: rgba(22,163,74,0.10); color: #16a34a; }
+  .flow-icon.purple { background: rgba(124,58,237,0.10); color: #7c3aed; }
+  .flow-label { font-weight: 500; color: var(--color-text-primary); font-size: 12.5px; }
+  .flow-desc { color: var(--color-text-secondary); font-size: 11px; margin-top: 1px; }
+  .flow-arrow {
+    color: var(--color-text-tertiary);
+    font-size: 11px;
+    text-align: center;
+    padding: 1px 0;
+    line-height: 1;
+  }
+
+  /* ---------- Stats bar ---------- */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-secondary);
+  }
+  .stat-item {
+    padding: 1.4rem 2.25rem;
+    border-right: 0.5px solid var(--color-border-tertiary);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 32px;
+    color: var(--color-text-primary);
+    letter-spacing: -1.5px;
+    line-height: 1;
+  }
+  .stat-num .unit { color: var(--accent); font-style: italic; }
+  .stat-label { font-size: 12px; color: var(--color-text-secondary); margin-top: 6px; }
+
+  /* ---------- Marketplace ---------- */
+  .marketplace { padding: 2.75rem 2.25rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    color: var(--color-text-primary);
+    letter-spacing: -0.8px;
+  }
+  .section-title em { font-style: italic; color: var(--accent); }
+  .filter-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .filter-tab {
+    font-family: var(--sans);
+    font-size: 12px;
+    padding: 6px 13px;
+    border-radius: 999px;
+    border: 0.5px solid var(--color-border-secondary);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-tab:hover { color: var(--color-text-primary); border-color: var(--color-border-primary); }
+  .filter-tab.active {
+    background: var(--ink);
+    color: var(--on-ink);
+    border-color: transparent;
+  }
+
+  .workflow-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .wf-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 14px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    display: flex;
+    flex-direction: column;
+  }
+  .wf-card:hover {
+    border-color: var(--color-border-primary);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+  }
+  .wf-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .wf-icon-wrap {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wf-icon-wrap i { font-size: 20px; }
+  .wf-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+  }
+  .badge-free { background: rgba(22,163,74,0.10); color: #15803d; }
+  .badge-pro  { background: rgba(255,77,0,0.10); color: var(--accent); }
+  .badge-new  { background: rgba(0,102,255,0.10); color: var(--accent2); }
+  .wf-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 6px;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+  .wf-desc {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin-bottom: 14px;
+    text-wrap: pretty;
+    flex: 1;
+  }
+  .wf-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 0.5px solid var(--color-border-tertiary);
+  }
+  .wf-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+  }
+  .wf-price {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    font-family: var(--serif);
+    letter-spacing: -0.3px;
+  }
+  .wf-price.free { color: #16a34a; }
+  .avatar-sm {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.2px;
+  }
+
+  /* ---------- Creator strip ---------- */
+  .creator-strip {
+    padding: 2.25rem 2.25rem;
+    background: var(--color-background-secondary);
+    border-top: 0.5px solid var(--color-border-tertiary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+  .creator-header {
+    font-family: var(--serif);
+    font-size: 24px;
+    color: var(--color-text-primary);
+    margin-bottom: 1.2rem;
+    letter-spacing: -0.6px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .creator-header .month {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .creator-cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  .creator-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 12px;
+    padding: 1.1rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .creator-card:hover {
+    border-color: var(--color-border-primary);
+    transform: translateY(-1px);
+  }
+  .creator-avatar {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .creator-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .creator-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .creator-flows {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 0.5px solid var(--color-border-tertiary);
+  }
+  .creator-flows strong { color: var(--color-text-primary); font-weight: 500; }
+
+  /* ---------- CTA banner ---------- */
+  .cta-banner {
+    padding: 3.25rem 2.25rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    background: var(--cta-gradient), var(--color-background-primary);
+  }
+  .cta-title {
+    font-family: var(--serif);
+    font-size: 40px;
+    color: var(--color-text-primary);
+    letter-spacing: -1.2px;
+    line-height: 1.05;
+    margin-bottom: 10px;
+    text-wrap: balance;
+  }
+  .cta-title em { font-style: italic; color: var(--accent); }
+  .cta-sub { font-size: 15px; color: var(--color-text-secondary); }
+  .cta-actions { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+  .btn-cta-main {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 13px 28px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.12s, box-shadow 0.15s;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.04), 0 4px 12px rgba(255,77,0,0.18);
+  }
+  .btn-cta-main:hover { transform: translateY(-1px); box-shadow: 0 2px 0 rgba(0,0,0,0.04), 0 6px 18px rgba(255,77,0,0.26); }
+  .cta-note { font-size: 11px; color: var(--color-text-secondary); }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    padding: 1.5rem 2.25rem;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+  }
+  .footer-links { display: flex; gap: 18px; }
+  .footer-links a { color: var(--color-text-tertiary); text-decoration: none; cursor: pointer; }
+  .footer-links a:hover { color: var(--color-text-primary); }
+
+  /* ---------- Creator modal ---------- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 18, 14, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease;
+  }
+  [data-theme="dark"] .modal-overlay { background: rgba(0, 0, 0, 0.6); }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+  .modal {
+    width: 100%;
+    max-width: 480px;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(20, 18, 14, 0.18), 0 2px 6px rgba(20, 18, 14, 0.06);
+    transform: translateY(8px) scale(0.98);
+    transition: transform 0.18s ease;
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+  .modal-head {
+    padding: 1.75rem 1.75rem 1.25rem;
+    position: relative;
+  }
+  .modal-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 0.9rem;
+  }
+  .modal-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    letter-spacing: -0.8px;
+    line-height: 1.1;
+    color: var(--color-text-primary);
+    margin-bottom: 6px;
+  }
+  .modal-title em { font-style: italic; color: var(--accent); }
+  .modal-sub {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+  }
+  .modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .modal-close:hover { background: var(--color-background-tertiary); color: var(--color-text-primary); }
+
+  .modal-form { padding: 0 1.75rem 1.75rem; display: flex; flex-direction: column; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.02em;
+  }
+  .field input, .field select, .field textarea {
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 0.5px solid var(--color-border-secondary);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 72px; font-family: var(--sans); }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .field input::placeholder, .field textarea::placeholder { color: var(--color-text-tertiary); }
+  .field.reveal:not([hidden]) { animation: revealField 0.22s ease-out; }
+  @keyframes revealField {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .field select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%239a958c' stroke-width='1.4' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 0.5px solid var(--color-border-secondary);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.12s;
+  }
+  .chip:hover { border-color: var(--color-border-primary); color: var(--color-text-primary); }
+  .chip.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: transparent;
+  }
+
+  .modal-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-top: 6px;
+  }
+  .modal-foot .note {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    max-width: 220px;
+    line-height: 1.4;
+  }
+  .btn-submit {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 11px 22px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: transform 0.12s, box-shadow 0.15s;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.04), 0 4px 12px rgba(255,77,0,0.18);
+  }
+  .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 2px 0 rgba(0,0,0,0.04), 0 6px 18px rgba(255,77,0,0.26); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .field-error { font-size: 11px; color: #e11d48; margin-top: 2px; display: none; }
+  .field.has-error input, .field.has-error select, .field.has-error textarea { border-color: #e11d48; }
+  .field.has-error .field-error { display: block; }
+
+  /* Success state */
+  .modal-success {
+    padding: 2.25rem 1.75rem;
+    text-align: center;
+    display: none;
+  }
+  .modal.success .modal-head,
+  .modal.success .modal-form { display: none; }
+  .modal.success .modal-success { display: block; }
+  .success-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+  }
+  .success-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    letter-spacing: -0.6px;
+    color: var(--color-text-primary);
+    margin-bottom: 6px;
+  }
+  .success-sub {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 1180px) {
+    .workflow-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 860px) {
+    .nav, .hero, .marketplace, .creator-strip, .cta-banner, .footer, .stat-item { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .hero { grid-template-columns: 1fr; padding-top: 2.5rem; padding-bottom: 2.5rem; gap: 2rem; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .stat-item:nth-child(2) { border-right: none; }
+    .stat-item:nth-child(-n+2) { border-bottom: 0.5px solid var(--color-border-tertiary); }
+    .workflow-grid { grid-template-columns: 1fr; }
+    .creator-cards { grid-template-columns: repeat(2, 1fr); }
+    .cta-banner { grid-template-columns: 1fr; }
+    .cta-actions { align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <h2 class="sr-only">Autoflow — Automation workflow marketplace</h2>
+
+  <nav class="nav">
+    <div class="logo">Auto<span>flow</span></div>
+    <ul class="nav-links">
+      <li><a href="Browse Workflows.html" style="color:inherit;text-decoration:none">Browse</a></li>
+      <li><a href="Creators.html" style="color:inherit;text-decoration:none">Creators</a></li>
+      <li>Pricing</li>
+      <li>Blog</li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-ghost">Sign in</button>
+      <button class="btn-solid">Get started</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-tag"><span class="pulse"></span> New workflows every week</div>
+      <h1>Automate your<br />business <em>instantly</em></h1>
+      <p class="hero-sub">Browse 500+ plug-and-play automation workflows built by real operators. Buy once, use forever — no code required.</p>
+      <div class="hero-ctas">
+        <a href="Browse Workflows.html" class="btn-hero" style="text-decoration:none">Browse workflows <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <button class="btn-hero-ghost" data-open-creator><i class="ti ti-plus" aria-hidden="true"></i> Sell your workflows</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-card-header">
+        <div class="dot"></div>
+        Lead Capture → CRM → Slack Alert
+        <span class="meta">Live</span>
+      </div>
+      <div class="flow-preview">
+        <div class="flow-step">
+          <div class="flow-icon orange"><i class="ti ti-forms" aria-hidden="true"></i></div>
+          <div>
+            <div class="flow-label">Form submitted</div>
+            <div class="flow-desc">New lead on Typeform</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-icon blue"><i class="ti ti-database" aria-hidden="true"></i></div>
+          <div>
+            <div class="flow-label">Create CRM contact</div>
+            <div class="flow-desc">Add to HubSpot + tag lead source</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-icon green"><i class="ti ti-mail" aria-hidden="true"></i></div>
+          <div>
+            <div class="flow-label">Send welcome email</div>
+            <div class="flow-desc">Personalized via AI, via Gmail</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-icon purple"><i class="ti ti-brand-slack" aria-hidden="true"></i></div>
+          <div>
+            <div class="flow-label">Slack alert to team</div>
+            <div class="flow-desc">Hot lead? Pings sales in #leads</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num">512</div>
+      <div class="stat-label">Workflows available</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">84</div>
+      <div class="stat-label">Expert creators</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">14<span class="unit">k</span></div>
+      <div class="stat-label">Businesses using it</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4.9<span class="unit">★</span></div>
+      <div class="stat-label">Average rating</div>
+    </div>
+  </div>
+
+  <section class="marketplace">
+    <div class="section-header">
+      <div class="section-title">Trending <em>workflows</em></div>
+      <div class="filter-tabs">
+        <button class="filter-tab active">All</button>
+        <button class="filter-tab">Lead gen</button>
+        <button class="filter-tab">AI</button>
+        <button class="filter-tab">E-comm</button>
+        <button class="filter-tab">Finance</button>
+        <button class="filter-tab">Ops</button>
+      </div>
+    </div>
+    <div class="workflow-grid">
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-icon-wrap" style="background:rgba(255,77,0,0.10)"><i class="ti ti-mail-forward" style="color:#FF4D00" aria-hidden="true"></i></div>
+          <span class="wf-badge badge-pro">Pro</span>
+        </div>
+        <div class="wf-title">Cold email reply detector + CRM router</div>
+        <div class="wf-desc">Monitors inbox, classifies replies by intent, routes hot leads to sales instantly.</div>
+        <div class="wf-footer">
+          <div class="wf-meta">
+            <div class="avatar-sm" style="background:#0066FF">JR</div>
+            <span>247 installs</span>
+          </div>
+          <div class="wf-price">$49</div>
+        </div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-icon-wrap" style="background:rgba(0,102,255,0.10)"><i class="ti ti-robot" style="color:#0066FF" aria-hidden="true"></i></div>
+          <span class="wf-badge badge-new">New</span>
+        </div>
+        <div class="wf-title">AI content repurposer for LinkedIn</div>
+        <div class="wf-desc">Paste a blog post, get 5 LinkedIn posts drafted and scheduled automatically.</div>
+        <div class="wf-footer">
+          <div class="wf-meta">
+            <div class="avatar-sm" style="background:#FF4D00">AL</div>
+            <span>183 installs</span>
+          </div>
+          <div class="wf-price">$39</div>
+        </div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-icon-wrap" style="background:rgba(22,163,74,0.10)"><i class="ti ti-file-invoice" style="color:#16a34a" aria-hidden="true"></i></div>
+          <span class="wf-badge badge-free">Free</span>
+        </div>
+        <div class="wf-title">Invoice overdue auto-chaser</div>
+        <div class="wf-desc">Sends polite → firm → final notice emails on a smart schedule. Stops on payment.</div>
+        <div class="wf-footer">
+          <div class="wf-meta">
+            <div class="avatar-sm" style="background:#7c3aed">MK</div>
+            <span>602 installs</span>
+          </div>
+          <div class="wf-price free">Free</div>
+        </div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-icon-wrap" style="background:rgba(124,58,237,0.10)"><i class="ti ti-shopping-cart" style="color:#7c3aed" aria-hidden="true"></i></div>
+          <span class="wf-badge badge-pro">Pro</span>
+        </div>
+        <div class="wf-title">Abandoned cart recovery with AI copy</div>
+        <div class="wf-desc">Detects abandoned Shopify carts, writes personalized SMS + email, tracks recovery rate.</div>
+        <div class="wf-footer">
+          <div class="wf-meta">
+            <div class="avatar-sm" style="background:#FF4D00">DS</div>
+            <span>319 installs</span>
+          </div>
+          <div class="wf-price">$79</div>
+        </div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-icon-wrap" style="background:rgba(180,83,9,0.10)"><i class="ti ti-chart-bar" style="color:#b45309" aria-hidden="true"></i></div>
+          <span class="wf-badge badge-new">New</span>
+        </div>
+        <div class="wf-title">Weekly competitor price monitor</div>
+        <div class="wf-desc">Scrapes competitor pricing pages, sends a Slack digest with changes every Monday.</div>
+        <div class="wf-footer">
+          <div class="wf-meta">
+            <div class="avatar-sm" style="background:#0066FF">PW</div>
+            <span>94 installs</span>
+          </div>
+          <div class="wf-price">$29</div>
+        </div>
+      </div>
+
+      <div class="wf-card">
+        <div class="wf-card-top">
+          <div class="wf-icon-wrap" style="background:rgba(219,39,119,0.10)"><i class="ti ti-microphone" style="color:#db2777" aria-hidden="true"></i></div>
+          <span class="wf-badge badge-pro">Pro</span>
+        </div>
+        <div class="wf-title">Podcast guest outreach machine</div>
+        <div class="wf-desc">Finds podcasts in your niche, drafts personalized pitch emails referencing real episodes.</div>
+        <div class="wf-footer">
+          <div class="wf-meta">
+            <div class="avatar-sm" style="background:#16a34a">TN</div>
+            <span>141 installs</span>
+          </div>
+          <div class="wf-price">$59</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="creator-strip">
+    <div class="creator-header">
+      Top creators
+      <span class="month">This month</span>
+    </div>
+    <div class="creator-cards">
+      <a class="creator-card" href="Creator Profile.html?id=JR" style="text-decoration:none;color:inherit">
+        <div class="creator-avatar" style="background:#FF4D00">JR</div>
+        <div class="creator-name">Jake Rivera</div>
+        <div class="creator-sub">Automation lead</div>
+        <div class="creator-flows"><strong>18</strong> flows · <strong>$4.2k</strong> earned</div>
+      </a>
+      <a class="creator-card" href="Creator Profile.html?id=AL" style="text-decoration:none;color:inherit">
+        <div class="creator-avatar" style="background:#0066FF">AL</div>
+        <div class="creator-name">Aisha Lema</div>
+        <div class="creator-sub">AI specialist</div>
+        <div class="creator-flows"><strong>12</strong> flows · <strong>$2.8k</strong> earned</div>
+      </a>
+      <a class="creator-card" href="Creator Profile.html?id=MK" style="text-decoration:none;color:inherit">
+        <div class="creator-avatar" style="background:#7c3aed">MK</div>
+        <div class="creator-name">Marcus Kim</div>
+        <div class="creator-sub">Growth hacker</div>
+        <div class="creator-flows"><strong>9</strong> flows · <strong>$1.9k</strong> earned</div>
+      </a>
+      <a class="creator-card" href="Creator Profile.html?id=TN" style="text-decoration:none;color:inherit">
+        <div class="creator-avatar" style="background:#16a34a">TN</div>
+        <div class="creator-name">Tara Novak</div>
+        <div class="creator-sub">SaaS operator</div>
+        <div class="creator-flows"><strong>22</strong> flows · <strong>$6.1k</strong> earned</div>
+      </a>
+      <a class="creator-card" href="Creator Profile.html?id=DS" style="text-decoration:none;color:inherit">
+        <div class="creator-avatar" style="background:#b45309">DS</div>
+        <div class="creator-name">Dev Singh</div>
+        <div class="creator-sub">E-comm expert</div>
+        <div class="creator-flows"><strong>15</strong> flows · <strong>$3.4k</strong> earned</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="cta-banner">
+    <div>
+      <div class="cta-title">Start selling your<br />automations <em>today</em></div>
+      <div class="cta-sub">List your first workflow free. Keep 80% of every sale.</div>
+    </div>
+    <div class="cta-actions">
+      <button class="btn-cta-main" data-open-creator>Become a creator <i class="ti ti-arrow-up-right" aria-hidden="true"></i></button>
+      <div class="cta-note">No setup fee · Instant payouts</div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div>© 2026 Autoflow Automations</div>
+    <div class="footer-links">
+      <a>Docs</a>
+      <a>Terms</a>
+      <a>Privacy</a>
+      <a>Contact</a>
+    </div>
+  </footer>
+</div>
+
+<div id="tweaks-root"></div>
+
+<!-- Creator application modal -->
+<div class="modal-overlay" id="creator-modal" role="dialog" aria-modal="true" aria-labelledby="creator-modal-title">
+  <div class="modal">
+    <div class="modal-head">
+      <button class="modal-close" aria-label="Close" data-close-creator><i class="ti ti-x" aria-hidden="true"></i></button>
+      <div class="modal-eyebrow">Creator application</div>
+      <div class="modal-title" id="creator-modal-title">Sell your <em>automations</em></div>
+      <div class="modal-sub">Tell us a bit about you. We review applications within 48 hours.</div>
+    </div>
+
+    <form class="modal-form" id="creator-form" novalidate>
+      <div class="field-row">
+        <div class="field">
+          <label for="cf-name">Full name</label>
+          <input id="cf-name" name="name" type="text" placeholder="Jane Doe" autocomplete="name" required />
+          <div class="field-error">Required</div>
+        </div>
+        <div class="field">
+          <label for="cf-email">Email</label>
+          <input id="cf-email" name="email" type="email" placeholder="jane@company.com" autocomplete="email" required />
+          <div class="field-error">Valid email required</div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="cf-role">Specialty</label>
+          <select id="cf-role" name="role" required>
+            <option value="" disabled selected>Choose…</option>
+            <option>Automation lead</option>
+            <option>AI specialist</option>
+            <option>Growth hacker</option>
+            <option>SaaS operator</option>
+            <option>E-comm expert</option>
+            <option>Finance ops</option>
+            <option>Other</option>
+          </select>
+          <div class="field-error">Required</div>
+        </div>
+        <div class="field">
+          <label for="cf-count">Workflows ready</label>
+          <select id="cf-count" name="count" required>
+            <option value="" disabled selected>Choose…</option>
+            <option>1–3</option>
+            <option>4–10</option>
+            <option>11–25</option>
+            <option>25+</option>
+          </select>
+          <div class="field-error">Required</div>
+        </div>
+      </div>
+
+      <div class="field reveal" id="cf-role-other-field" hidden>
+        <label for="cf-role-other">Briefly, what do you do?</label>
+        <textarea id="cf-role-other" name="roleOther" placeholder="e.g. I build internal tools for sales teams using custom Python scripts…" rows="2"></textarea>
+        <div class="field-error">Tell us a bit about your specialty</div>
+      </div>
+
+      <div class="field">
+        <label>Tools you build with</label>
+        <div class="chip-group" id="cf-tools">
+          <button type="button" class="chip" data-tool="Zapier">Zapier</button>
+          <button type="button" class="chip" data-tool="Make">Make</button>
+          <button type="button" class="chip" data-tool="n8n">n8n</button>
+          <button type="button" class="chip" data-tool="Airtable">Airtable</button>
+          <button type="button" class="chip" data-tool="OpenAI">OpenAI</button>
+          <button type="button" class="chip" data-tool="Slack">Slack</button>
+          <button type="button" class="chip" data-tool="HubSpot">HubSpot</button>
+          <button type="button" class="chip" data-tool="Shopify">Shopify</button>
+          <button type="button" class="chip" id="cf-tools-other-chip" data-tool="Other"><i class="ti ti-plus" aria-hidden="true" style="font-size:11px;margin-right:3px;vertical-align:-1px"></i>Other</button>
+        </div>
+      </div>
+
+      <div class="field reveal" id="cf-tools-other-field" hidden>
+        <label for="cf-tools-other">Other tools, software or languages</label>
+        <input id="cf-tools-other" name="toolsOther" type="text" placeholder="e.g. Python, Retool, Supabase, n8n self-hosted…" />
+      </div>
+
+      <div class="field">
+        <label for="cf-pitch">Quick pitch <span style="color:var(--color-text-tertiary);font-weight:400">(optional)</span></label>
+        <textarea id="cf-pitch" name="pitch" placeholder="What kind of automations do you build, and who are they for?"></textarea>
+      </div>
+
+      <div class="modal-foot">
+        <div class="note">No setup fee · Keep 80% of every sale · Instant payouts</div>
+        <button type="submit" class="btn-submit">Apply <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+      </div>
+    </form>
+
+    <div class="modal-success">
+      <div class="success-icon"><i class="ti ti-check" aria-hidden="true"></i></div>
+      <div class="success-title">Application <em style="color:var(--accent);font-style:italic">received</em></div>
+      <div class="success-sub">Thanks — we'll get back to you within 48 hours at the email you provided.</div>
+      <button type="button" class="btn-submit" data-close-creator style="background:var(--ink);color:var(--on-ink);box-shadow:none">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const modal = document.getElementById('creator-modal');
+    const modalBox = modal.querySelector('.modal');
+    const form = document.getElementById('creator-form');
+    const toolsRow = document.getElementById('cf-tools');
+    const openers = document.querySelectorAll('[data-open-creator]');
+    const closers = modal.querySelectorAll('[data-close-creator]');
+
+    function open() {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => document.getElementById('cf-name').focus(), 200);
+    }
+    function close() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+      // Reset to form view after exit animation
+      setTimeout(() => {
+        modalBox.classList.remove('success');
+        form.reset();
+        toolsRow.querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
+        form.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
+        document.getElementById('cf-role-other-field').hidden = true;
+        document.getElementById('cf-tools-other-field').hidden = true;
+      }, 250);
+    }
+
+    openers.forEach(b => b.addEventListener('click', open));
+    closers.forEach(b => b.addEventListener('click', close));
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) close();
+    });
+
+    // Tool chip toggles
+    const toolsOtherChip = document.getElementById('cf-tools-other-chip');
+    const toolsOtherField = document.getElementById('cf-tools-other-field');
+    const toolsOtherInput = document.getElementById('cf-tools-other');
+    toolsRow.addEventListener('click', e => {
+      const chip = e.target.closest('.chip');
+      if (!chip) return;
+      chip.classList.toggle('active');
+      if (chip === toolsOtherChip) {
+        const on = chip.classList.contains('active');
+        toolsOtherField.hidden = !on;
+        if (on) setTimeout(() => toolsOtherInput.focus(), 50);
+        else toolsOtherInput.value = '';
+      }
+    });
+
+    // Specialty "Other" reveals comment field
+    const roleSelect = document.getElementById('cf-role');
+    const roleOtherField = document.getElementById('cf-role-other-field');
+    const roleOtherInput = document.getElementById('cf-role-other');
+    roleSelect.addEventListener('change', () => {
+      const isOther = roleSelect.value === 'Other';
+      roleOtherField.hidden = !isOther;
+      if (isOther) setTimeout(() => roleOtherInput.focus(), 50);
+      else { roleOtherInput.value = ''; roleOtherField.classList.remove('has-error'); }
+    });
+
+    // Validate + submit
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let valid = true;
+      form.querySelectorAll('.field').forEach(f => f.classList.remove('has-error'));
+
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const role = form.role.value;
+      const count = form.count.value;
+
+      if (!name) { form.name.closest('.field').classList.add('has-error'); valid = false; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        form.email.closest('.field').classList.add('has-error'); valid = false;
+      }
+      if (!role) { form.role.closest('.field').classList.add('has-error'); valid = false; }
+      if (!count) { form.count.closest('.field').classList.add('has-error'); valid = false; }
+
+      // If specialty is Other, require the comment field
+      if (role === 'Other' && !form.roleOther.value.trim()) {
+        roleOtherField.classList.add('has-error');
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Pretend submit
+      modalBox.classList.add('success');
+    });
+  })();
+</script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "dark": false
+  }/*EDITMODE-END*/;
+
+  // Read saved theme on init so the toggle reflects the user's last choice
+  // across page navigations. Defaults to light if nothing saved.
+  function getInitialDark() {
+    try {
+      // One-time migration: clear pre-fix stale value
+      if (!localStorage.getItem('autoflow.themeVersion')) {
+        localStorage.removeItem('autoflow.theme');
+        localStorage.setItem('autoflow.themeVersion', '2');
+      }
+      const saved = localStorage.getItem('autoflow.theme');
+      if (saved === 'dark') return true;
+      if (saved === 'light') return false;
+    } catch (e) {}
+    return TWEAK_DEFAULTS.dark;
+  }
+
+  function applyTheme(dark) {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    try { localStorage.setItem('autoflow.theme', dark ? 'dark' : 'light'); } catch (e) {}
+  }
+
+  function App() {
+    // Seed the tweak with the saved-or-default value so a fresh visit
+    // restores the user's last-picked theme.
+    const initial = { ...TWEAK_DEFAULTS, dark: getInitialDark() };
+    const [t, setTweak] = useTweaks(initial);
+
+    React.useEffect(() => {
+      applyTheme(t.dark);
+    }, [t.dark]);
+
+    return (
+      <TweaksPanel>
+        <TweakSection label="Appearance">
+          <TweakToggle
+            label="Dark mode"
+            value={t.dark}
+            onChange={v => setTweak('dark', v)}
+          />
+        </TweakSection>
+      </TweaksPanel>
+    );
+  }
+
+  // Apply initial theme before React mounts so there's no flash
+  applyTheme(getInitialDark());
+
+  ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<App />);
+</script>
+
+<script src="browse-data.js"></script>
+<script src="creators-data.js"></script>
+<script src="autoflow-shared.js"></script>
+
+</body>
+</html>

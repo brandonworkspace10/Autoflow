@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Creators — Autoflow</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.5.0/dist/tabler-icons.min.css" />
+
+<script>
+  // Apply theme before paint
+  (function () {
+    try {
+      // One-time migration: clear pre-fix stale value
+      if (!localStorage.getItem('autoflow.themeVersion')) {
+        localStorage.removeItem('autoflow.theme');
+        localStorage.setItem('autoflow.themeVersion', '2');
+      }
+      const saved = localStorage.getItem('autoflow.theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    } catch (e) {}
+  })();
+</script>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f6f5f1;
+    --color-background-tertiary: #efece4;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #6b6760;
+    --color-text-tertiary: #9a958c;
+    --color-border-primary: #d8d4cb;
+    --color-border-secondary: #e3dfd6;
+    --color-border-tertiary: #ece8df;
+    --accent: #FF4D00;
+    --accent-soft: rgba(255, 77, 0, 0.08);
+    --accent2: #0066FF;
+    --ink: #1a1a1a;
+    --on-ink: #ffffff;
+    --shadow-card-color: rgba(20, 18, 14, 0.04);
+    --shadow-hover-color: rgba(20, 18, 14, 0.06);
+  }
+  [data-theme="dark"] {
+    --color-background-primary: #14110d;
+    --color-background-secondary: #1c1814;
+    --color-background-tertiary: #24201a;
+    --color-text-primary: #f6f4ef;
+    --color-text-secondary: #a09a8e;
+    --color-text-tertiary: #6b6760;
+    --color-border-primary: #3a342c;
+    --color-border-secondary: #2a251f;
+    --color-border-tertiary: #221e18;
+    --accent-soft: rgba(255, 77, 0, 0.14);
+    --ink: #f6f4ef;
+    --on-ink: #14110d;
+    --shadow-card-color: rgba(0, 0, 0, 0.4);
+    --shadow-hover-color: rgba(0, 0, 0, 0.5);
+  }
+  :root {
+    --serif: 'Instrument Serif', 'Times New Roman', serif;
+    --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --shadow-card: 0 1px 0 var(--shadow-card-color), 0 1px 2px var(--shadow-card-color);
+    --shadow-hover: 0 4px 14px var(--shadow-hover-color), 0 1px 2px var(--shadow-card-color);
+  }
+
+  html, body { background: var(--color-background-primary); }
+  body {
+    font-family: var(--sans);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .page {
+    max-width: 1320px;
+    margin: 0 auto;
+    background: var(--color-background-primary);
+  }
+
+  /* Nav */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 2.25rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .logo {
+    font-family: var(--serif); font-size: 24px;
+    color: var(--color-text-primary); letter-spacing: -0.5px;
+    cursor: pointer;
+  }
+  .logo span { color: var(--accent); font-style: italic; }
+  .nav-links {
+    display: flex; gap: 28px;
+    font-size: 13px; color: var(--color-text-secondary);
+    list-style: none;
+  }
+  .nav-links li { cursor: pointer; transition: color 0.15s; }
+  .nav-links li:hover, .nav-links li.active { color: var(--color-text-primary); }
+  .nav-links li.active { font-weight: 500; }
+  .nav-right { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost {
+    font-size: 13px; padding: 7px 16px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 999px;
+    background: transparent; color: var(--color-text-primary);
+    cursor: pointer; transition: background 0.15s, border-color 0.15s;
+  }
+  .btn-ghost:hover { background: var(--color-background-secondary); border-color: var(--color-border-primary); }
+  .btn-solid {
+    font-size: 13px; font-weight: 500; padding: 7px 16px;
+    border: none; border-radius: 999px;
+    background: var(--ink); color: var(--on-ink);
+    cursor: pointer; transition: transform 0.12s, filter 0.15s;
+  }
+  .btn-solid:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+  /* Header */
+  .head {
+    padding: 3rem 2.25rem 2rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: end;
+  }
+  .crumbs {
+    font-size: 11px; color: var(--color-text-tertiary);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .crumbs a:hover { color: var(--color-text-primary); }
+  .head-title {
+    font-family: var(--serif); font-size: 48px;
+    letter-spacing: -1.4px; line-height: 1;
+    color: var(--color-text-primary);
+  }
+  .head-title em { font-style: italic; color: var(--accent); }
+  .head-sub {
+    margin-top: 0.7rem; font-size: 14px;
+    color: var(--color-text-secondary); max-width: 500px;
+  }
+  .head-stats { display: flex; gap: 2rem; align-items: baseline; }
+  .head-stat { text-align: right; }
+  .head-stat-num {
+    font-family: var(--serif); font-size: 32px;
+    color: var(--color-text-primary); letter-spacing: -1px; line-height: 1;
+  }
+  .head-stat-num em { font-style: italic; color: var(--accent); }
+  .head-stat-label {
+    font-size: 11px; color: var(--color-text-tertiary);
+    margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+
+  /* Featured creator */
+  .featured-creator {
+    margin: 2rem 2.25rem 0;
+    border-radius: 20px;
+    border: 0.5px solid var(--color-border-secondary);
+    overflow: hidden;
+    background:
+      radial-gradient(120% 100% at 0% 0%, rgba(255,77,0,0.08) 0%, transparent 55%),
+      var(--color-background-secondary);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+  .fc-left {
+    padding: 2rem 2.25rem;
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .fc-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 4px 10px; border-radius: 999px;
+    align-self: flex-start;
+  }
+  .fc-row { display: flex; align-items: center; gap: 1rem; }
+  .fc-avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 600; color: #fff;
+    letter-spacing: -0.5px; flex-shrink: 0;
+  }
+  .fc-name {
+    font-family: var(--serif); font-size: 32px;
+    letter-spacing: -0.8px; line-height: 1; color: var(--color-text-primary);
+  }
+  .fc-role { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+  .fc-bio { font-size: 14px; color: var(--color-text-secondary); line-height: 1.55; max-width: 420px; }
+  .fc-meta { display: flex; gap: 1.5rem; padding-top: 0.5rem; }
+  .fc-meta-item .v {
+    font-family: var(--serif); font-size: 22px;
+    color: var(--color-text-primary); letter-spacing: -0.5px;
+  }
+  .fc-meta-item .l {
+    font-size: 11px; color: var(--color-text-tertiary);
+    letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px;
+  }
+  .fc-cta-row { display: flex; gap: 10px; padding-top: 0.5rem; }
+  .fc-cta {
+    font-size: 13px; font-weight: 500; padding: 10px 22px;
+    border-radius: 999px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: filter 0.15s, transform 0.12s;
+  }
+  .fc-cta.primary { background: var(--ink); color: var(--on-ink); border: none; }
+  .fc-cta.primary:hover { filter: brightness(1.15); transform: translateY(-1px); }
+  .fc-cta.ghost {
+    background: transparent;
+    border: 0.5px solid var(--color-border-primary);
+    color: var(--color-text-primary);
+  }
+  .fc-cta.ghost:hover { background: var(--color-background-primary); }
+
+  .fc-right {
+    padding: 2rem 2.25rem;
+    border-left: 0.5px solid var(--color-border-tertiary);
+    display: flex; flex-direction: column; gap: 10px;
+    background: var(--color-background-primary);
+  }
+  .fc-right-title {
+    font-size: 11px; color: var(--color-text-tertiary);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .fc-flow {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    background: var(--color-background-secondary);
+    border-radius: 10px; font-size: 12.5px;
+    color: var(--color-text-primary);
+  }
+  .fc-flow i { color: var(--accent); font-size: 14px; }
+  .fc-flow .price {
+    margin-left: auto;
+    font-family: var(--serif); font-size: 14px;
+    letter-spacing: -0.3px;
+  }
+  .fc-flow .price.free { color: #16a34a; }
+  [data-theme="dark"] .fc-flow .price.free { color: #4ade80; }
+
+  /* Toolbar */
+  .toolbar {
+    margin: 2rem 2.25rem 0;
+    padding: 1rem 0;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .search-wrap { position: relative; width: 280px; }
+  .search-wrap .ti-search {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--color-text-tertiary); font-size: 15px; pointer-events: none;
+  }
+  .search-input {
+    width: 100%; padding: 10px 14px 10px 38px;
+    border-radius: 999px;
+    border: 0.5px solid var(--color-border-secondary);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: var(--sans); font-size: 13px; outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .search-input::placeholder { color: var(--color-text-tertiary); }
+
+  .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; justify-content: center; }
+  .chip {
+    font-size: 12px; padding: 6px 13px;
+    border-radius: 999px;
+    border: 0.5px solid var(--color-border-secondary);
+    background: transparent; color: var(--color-text-secondary);
+    cursor: pointer; transition: all 0.12s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .chip:hover { color: var(--color-text-primary); border-color: var(--color-border-primary); }
+  .chip.active { background: var(--ink); color: var(--on-ink); border-color: transparent; }
+  .chip .count { font-size: 10px; opacity: 0.7; }
+
+  .sort-wrap {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--color-text-secondary);
+  }
+  .sort-select {
+    appearance: none; -webkit-appearance: none;
+    font-family: var(--sans); font-size: 13px;
+    padding: 7px 32px 7px 14px; border-radius: 999px;
+    border: 0.5px solid var(--color-border-secondary);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%239a958c' stroke-width='1.4' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat; background-position: right 12px center;
+    outline: none;
+  }
+  .sort-select:focus { border-color: var(--accent); }
+
+  .result-count {
+    font-size: 12px; color: var(--color-text-tertiary);
+    padding: 0 2.25rem; margin-top: 1rem;
+  }
+  .result-count strong { color: var(--color-text-secondary); font-weight: 500; }
+
+  /* Grid */
+  .grid {
+    padding: 1rem 2.25rem 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .creator-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 16px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    display: flex; flex-direction: column; gap: 1rem;
+    min-height: 280px;
+    position: relative;
+  }
+  .creator-card:hover {
+    border-color: var(--color-border-primary);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+  }
+  .cc-top { display: flex; align-items: flex-start; gap: 14px; }
+  .cc-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 600; color: #fff;
+    letter-spacing: -0.4px; flex-shrink: 0;
+  }
+  .cc-name-block { flex: 1; min-width: 0; }
+  .cc-name {
+    font-family: var(--serif); font-size: 20px;
+    letter-spacing: -0.5px; line-height: 1.1;
+    color: var(--color-text-primary);
+  }
+  .cc-handle {
+    font-size: 11.5px; color: var(--color-text-tertiary);
+    margin-top: 2px;
+  }
+  .cc-role {
+    display: inline-block; margin-top: 8px;
+    font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+  }
+  .cc-tier {
+    position: absolute; top: 14px; right: 14px;
+    font-size: 10px; padding: 3px 8px; border-radius: 999px;
+    font-weight: 500; letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: 3px;
+  }
+  .cc-tier i { font-size: 10px; }
+  .tier-top { background: var(--accent-soft); color: var(--accent); }
+  .tier-verified { background: rgba(0,102,255,0.10); color: var(--accent2); }
+  .tier-new { background: rgba(22,163,74,0.10); color: #15803d; }
+  [data-theme="dark"] .tier-new { color: #4ade80; }
+
+  .cc-bio {
+    font-size: 12.5px; color: var(--color-text-secondary);
+    line-height: 1.5; text-wrap: pretty;
+  }
+
+  .cc-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 4px; padding-top: 0.5rem;
+    border-top: 0.5px solid var(--color-border-tertiary);
+  }
+  .cc-stat .v {
+    font-family: var(--serif); font-size: 17px;
+    color: var(--color-text-primary); letter-spacing: -0.3px; line-height: 1;
+  }
+  .cc-stat .v.rating { display: inline-flex; align-items: center; gap: 3px; }
+  .cc-stat .v.rating i { font-size: 11px; color: #f59e0b; }
+  .cc-stat .l {
+    font-size: 10px; color: var(--color-text-tertiary);
+    letter-spacing: 0.05em; text-transform: uppercase; margin-top: 4px;
+  }
+
+  .cc-top-flow {
+    font-size: 11.5px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    display: flex; align-items: center; gap: 6px;
+    margin-top: auto;
+  }
+  .cc-top-flow .pin {
+    font-size: 10px; color: var(--accent);
+  }
+  .cc-top-flow .title {
+    flex: 1; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .cc-tools {
+    display: flex; gap: 4px; flex-wrap: wrap;
+  }
+  .cc-tool {
+    font-size: 10.5px;
+    padding: 3px 8px; border-radius: 999px;
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+  }
+
+  .empty {
+    grid-column: 1 / -1;
+    padding: 4rem 2rem; text-align: center;
+    color: var(--color-text-secondary); font-size: 14px;
+  }
+  .empty .ti {
+    font-size: 32px; color: var(--color-text-tertiary);
+    margin-bottom: 0.75rem; display: block;
+  }
+  .empty-title {
+    font-family: var(--serif); font-size: 22px;
+    color: var(--color-text-primary); letter-spacing: -0.5px; margin-bottom: 6px;
+  }
+
+  /* CTA */
+  .cta {
+    margin: 0 2.25rem 3rem;
+    padding: 3rem 2.5rem;
+    border-radius: 20px;
+    background:
+      radial-gradient(120% 100% at 100% 0%, rgba(255,77,0,0.10) 0%, transparent 55%),
+      var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-secondary);
+    display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center;
+  }
+  .cta-title {
+    font-family: var(--serif); font-size: 36px;
+    letter-spacing: -1px; line-height: 1.1;
+    color: var(--color-text-primary); margin-bottom: 8px;
+  }
+  .cta-title em { font-style: italic; color: var(--accent); }
+  .cta-sub { font-size: 14px; color: var(--color-text-secondary); }
+  .cta-btn {
+    font-size: 14px; font-weight: 500; padding: 13px 28px;
+    border-radius: 999px; background: var(--accent); color: #fff;
+    border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 0.12s, box-shadow 0.15s;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.04), 0 4px 12px rgba(255,77,0,0.18);
+  }
+  .cta-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 0 rgba(0,0,0,0.04), 0 6px 18px rgba(255,77,0,0.26); }
+
+  /* Footer */
+  .footer {
+    padding: 1.5rem 2.25rem;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--color-text-tertiary);
+  }
+  .footer-links { display: flex; gap: 18px; }
+  .footer-links a { color: var(--color-text-tertiary); cursor: pointer; }
+  .footer-links a:hover { color: var(--color-text-primary); }
+
+  @media (max-width: 980px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .featured-creator { grid-template-columns: 1fr; }
+    .fc-right { border-left: none; border-top: 0.5px solid var(--color-border-tertiary); }
+    .head { grid-template-columns: 1fr; }
+    .head-stats { justify-content: flex-start; }
+    .head-stat { text-align: left; }
+    .cta { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+    .nav, .head, .toolbar, .grid, .footer, .featured-creator, .cta { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .toolbar, .featured-creator, .cta { margin-left: 1.25rem; margin-right: 1.25rem; }
+    .filter-chips { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <nav class="nav">
+    <a class="logo" href="Autoflow Marketplace.html">Auto<span>flow</span></a>
+    <ul class="nav-links">
+      <li><a href="Browse Workflows.html">Browse</a></li>
+      <li class="active">Creators</li>
+      <li>Pricing</li>
+      <li>Blog</li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-ghost">Sign in</button>
+      <button class="btn-solid">Get started</button>
+    </div>
+  </nav>
+
+  <header class="head">
+    <div>
+      <div class="crumbs"><a href="Autoflow Marketplace.html">Home</a> · Creators</div>
+      <h1 class="head-title">Meet the <em>builders</em></h1>
+      <p class="head-sub">Real operators sharing the automations that run their teams. Follow the ones whose work fits how you work.</p>
+    </div>
+    <div class="head-stats">
+      <div class="head-stat">
+        <div class="head-stat-num" id="stat-creators">0</div>
+        <div class="head-stat-label">Creators</div>
+      </div>
+      <div class="head-stat">
+        <div class="head-stat-num" id="stat-workflows">0</div>
+        <div class="head-stat-label">Workflows</div>
+      </div>
+      <div class="head-stat">
+        <div class="head-stat-num"><em>4.7★</em></div>
+        <div class="head-stat-label">Avg rating</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="featured-creator" id="featured"></section>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input id="search" class="search-input" type="search" placeholder="Search creators, tools, roles…" />
+    </div>
+    <div class="filter-chips" id="filter-chips"></div>
+    <div class="sort-wrap">
+      <span>Sort by</span>
+      <select id="sort" class="sort-select">
+        <option value="popular">Most popular</option>
+        <option value="workflows">Most workflows</option>
+        <option value="rating">Highest rated</option>
+        <option value="newest">Newest</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result-count"><strong id="result-num">0</strong> creators</div>
+
+  <main class="grid" id="grid"></main>
+
+  <section class="cta">
+    <div>
+      <div class="cta-title">Have an automation that <em>just works?</em></div>
+      <div class="cta-sub">Join 84+ creators earning from their best workflows. Keep 80% of every sale.</div>
+    </div>
+    <a class="cta-btn" href="Autoflow Marketplace.html#become">Become a creator <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+  </section>
+
+  <footer class="footer">
+    <div>© 2026 Autoflow Automations</div>
+    <div class="footer-links">
+      <a>Docs</a>
+      <a>Terms</a>
+      <a>Privacy</a>
+      <a>Contact</a>
+    </div>
+  </footer>
+</div>
+
+<script src="browse-data.js"></script>
+<script src="creators-data.js"></script>
+<script src="autoflow-shared.js"></script>
+<script>
+(function () {
+  const data = window.CREATORS;
+  const state = { tier: 'all', role: 'all', search: '', sort: 'popular' };
+
+  // Header stats
+  document.getElementById('stat-creators').textContent = data.length;
+  document.getElementById('stat-workflows').textContent =
+    data.reduce((s, c) => s + c.workflows, 0);
+
+  // Featured = top-rated × installs leader
+  const featured = [...data].sort((a, b) => (b.installs * b.rating) - (a.installs * a.rating))[0];
+  renderFeatured(featured);
+
+  // Build filter chips from data
+  const roles = [...new Set(data.map(c => c.role))];
+  const chipsWrap = document.getElementById('filter-chips');
+  function addChip(label, key, value, count, icon) {
+    const el = document.createElement('button');
+    el.className = 'chip' + (state[key] === value ? ' active' : '');
+    el.innerHTML = (icon ? `<i class="ti ${icon}"></i>` : '') + label + (count != null ? ` <span class="count">${count}</span>` : '');
+    el.addEventListener('click', () => {
+      state[key] = state[key] === value ? 'all' : value;
+      // Re-render chips active state
+      chipsWrap.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      [...chipsWrap.children].forEach(c => {
+        if (c.dataset.key === key && c.dataset.value === state[key]) c.classList.add('active');
+        if (state[key] === 'all' && c.dataset.value === 'all' && c.dataset.key === key) c.classList.add('active');
+      });
+      render();
+    });
+    el.dataset.key = key;
+    el.dataset.value = value;
+    chipsWrap.appendChild(el);
+  }
+  addChip('All', 'tier', 'all');
+  addChip('Top', 'tier', 'top', data.filter(c => c.tier === 'top').length, 'ti-crown');
+  addChip('Verified', 'tier', 'verified', data.filter(c => c.tier === 'verified').length, 'ti-rosette-discount-check');
+  addChip('New', 'tier', 'new', data.filter(c => c.tier === 'new').length, 'ti-sparkles');
+  // Set the "All" chip active by default
+  chipsWrap.querySelector('[data-value="all"]').classList.add('active');
+
+  // Search + sort
+  document.getElementById('search').addEventListener('input', e => {
+    state.search = e.target.value.trim().toLowerCase();
+    render();
+  });
+  document.getElementById('sort').addEventListener('change', e => {
+    state.sort = e.target.value;
+    render();
+  });
+
+  function getFiltered() {
+    let list = data.filter(c => {
+      if (state.tier !== 'all' && c.tier !== state.tier) return false;
+      if (state.search) {
+        const hay = (c.name + ' ' + c.handle + ' ' + c.role + ' ' + c.bio + ' ' + c.tools.join(' ') + ' ' + c.location).toLowerCase();
+        if (!hay.includes(state.search)) return false;
+      }
+      return true;
+    });
+    switch (state.sort) {
+      case 'workflows': list.sort((a, b) => b.workflows - a.workflows); break;
+      case 'rating':    list.sort((a, b) => b.rating - a.rating); break;
+      case 'newest':    list.sort((a, b) => (b.joined || '0').localeCompare(a.joined || '0')); break;
+      default:          list.sort((a, b) => b.installs - a.installs);
+    }
+    return list;
+  }
+
+  function tierBadge(t) {
+    if (t === 'top')      return '<span class="cc-tier tier-top"><i class="ti ti-crown"></i>Top</span>';
+    if (t === 'verified') return '<span class="cc-tier tier-verified"><i class="ti ti-rosette-discount-check"></i>Verified</span>';
+    if (t === 'new')      return '<span class="cc-tier tier-new"><i class="ti ti-sparkles"></i>New</span>';
+    return '';
+  }
+
+  function fmtInstalls(n) {
+    if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k';
+    return n.toString();
+  }
+
+  function cardHTML(c) {
+    return `
+      <a class="creator-card" href="Creator Profile.html?id=${c.id}" style="text-decoration:none;color:inherit">
+        ${tierBadge(c.tier)}
+        <div class="cc-top">
+          <div class="cc-avatar" style="background:${c.color}">${c.id}</div>
+          <div class="cc-name-block">
+            <div class="cc-name">${c.name}</div>
+            <div class="cc-handle">${c.handle} · ${c.location}</div>
+            <div class="cc-role">${c.role}</div>
+          </div>
+        </div>
+        <div class="cc-bio">${c.bio}</div>
+        <div class="cc-stats">
+          <div class="cc-stat">
+            <div class="v">${c.workflows}</div>
+            <div class="l">Workflows</div>
+          </div>
+          <div class="cc-stat">
+            <div class="v">${fmtInstalls(c.installs)}</div>
+            <div class="l">Installs</div>
+          </div>
+          <div class="cc-stat">
+            <div class="v rating"><i class="ti ti-star-filled"></i>${c.rating.toFixed(1)}</div>
+            <div class="l">Rating</div>
+          </div>
+        </div>
+        <div class="cc-tools">
+          ${c.tools.slice(0, 3).map(t => `<span class="cc-tool">${t}</span>`).join('')}
+        </div>
+        <div class="cc-top-flow">
+          <i class="ti ti-pinned pin"></i>
+          <span class="title">${c.topFlow}</span>
+        </div>
+      </a>
+    `;
+  }
+
+  function render() {
+    const list = getFiltered();
+    document.getElementById('result-num').textContent = list.length;
+    const grid = document.getElementById('grid');
+    if (list.length === 0) {
+      grid.innerHTML = `
+        <div class="empty">
+          <i class="ti ti-mood-empty"></i>
+          <div class="empty-title">No creators match</div>
+          <div>Try a different filter or search term.</div>
+        </div>
+      `;
+      return;
+    }
+    grid.innerHTML = list.map(cardHTML).join('');
+  }
+
+  function renderFeatured(c) {
+    document.getElementById('featured').innerHTML = `
+      <div class="fc-left">
+        <span class="fc-eyebrow"><i class="ti ti-crown" style="font-size:11px"></i> Creator of the month</span>
+        <div class="fc-row">
+          <div class="fc-avatar" style="background:${c.color}">${c.id}</div>
+          <div>
+            <div class="fc-name">${c.name}</div>
+            <div class="fc-role">${c.role} · ${c.location} · Joined ${c.joined}</div>
+          </div>
+        </div>
+        <div class="fc-bio">${c.bio}</div>
+        <div class="fc-meta">
+          <div class="fc-meta-item">
+            <div class="v">${c.workflows}</div>
+            <div class="l">Workflows</div>
+          </div>
+          <div class="fc-meta-item">
+            <div class="v">${fmtInstalls(c.installs)}</div>
+            <div class="l">Installs</div>
+          </div>
+          <div class="fc-meta-item">
+            <div class="v">${c.rating.toFixed(1)}★</div>
+            <div class="l">Avg rating</div>
+          </div>
+        </div>
+        <div class="fc-cta-row">
+          <button class="fc-cta primary">View profile <i class="ti ti-arrow-right"></i></button>
+          <button class="fc-cta ghost"><i class="ti ti-bell"></i> Follow</button>
+        </div>
+      </div>
+      <div class="fc-right">
+        <div class="fc-right-title">Top workflows by ${c.name.split(' ')[0]}</div>
+        <div class="fc-flow"><i class="ti ti-pinned"></i> ${c.topFlow} <span class="price">$49</span></div>
+        <div class="fc-flow"><i class="ti ti-bolt"></i> Onboarding email sequence builder <span class="price">$69</span></div>
+        <div class="fc-flow"><i class="ti ti-mail"></i> Auto-respond to Tally forms <span class="price free">Free</span></div>
+        <div class="fc-flow"><i class="ti ti-route"></i> LinkedIn lead enrichment <span class="price">$89</span></div>
+      </div>
+    `;
+  }
+
+  render();
+})();
+</script>
+
+</body>
+</html>

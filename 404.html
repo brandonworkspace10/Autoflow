@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lost in automation — Autoflow</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.5.0/dist/tabler-icons.min.css" />
+
+<script>
+  (function () {
+    try {
+      if (!localStorage.getItem('autoflow.themeVersion')) {
+        localStorage.removeItem('autoflow.theme');
+        localStorage.setItem('autoflow.themeVersion', '2');
+      }
+      const saved = localStorage.getItem('autoflow.theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    } catch (e) {}
+  })();
+</script>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f6f5f1;
+    --color-background-tertiary: #efece4;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #6b6760;
+    --color-text-tertiary: #9a958c;
+    --color-border-primary: #d8d4cb;
+    --color-border-secondary: #e3dfd6;
+    --color-border-tertiary: #ece8df;
+    --accent: #FF4D00;
+    --accent-soft: rgba(255, 77, 0, 0.08);
+    --accent2: #0066FF;
+    --ink: #1a1a1a;
+    --on-ink: #ffffff;
+  }
+  [data-theme="dark"] {
+    --color-background-primary: #14110d;
+    --color-background-secondary: #1c1814;
+    --color-background-tertiary: #24201a;
+    --color-text-primary: #f6f4ef;
+    --color-text-secondary: #a09a8e;
+    --color-text-tertiary: #6b6760;
+    --color-border-primary: #3a342c;
+    --color-border-secondary: #2a251f;
+    --color-border-tertiary: #221e18;
+    --accent-soft: rgba(255, 77, 0, 0.14);
+    --ink: #f6f4ef;
+    --on-ink: #14110d;
+  }
+  :root {
+    --serif: 'Instrument Serif', 'Times New Roman', serif;
+    --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  html, body { background: var(--color-background-primary); height: 100%; }
+  body {
+    font-family: var(--sans); color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.25s ease, color 0.25s ease;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .page {
+    max-width: 1320px;
+    margin: 0 auto;
+    background: var(--color-background-primary);
+    width: 100%;
+    flex: 1;
+    display: flex; flex-direction: column;
+  }
+
+  /* Nav */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 2.25rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+  .logo { font-family: var(--serif); font-size: 24px; letter-spacing: -0.5px; }
+  .logo span { color: var(--accent); font-style: italic; }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; color: var(--color-text-secondary); list-style: none; }
+  .nav-links li { cursor: pointer; transition: color 0.15s; }
+  .nav-links li:hover { color: var(--color-text-primary); }
+  .nav-right { display: flex; gap: 10px; }
+  .btn-ghost {
+    font-size: 13px; padding: 7px 16px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 999px; background: transparent;
+    color: var(--color-text-primary); cursor: pointer;
+  }
+  .btn-solid {
+    font-size: 13px; font-weight: 500; padding: 7px 16px;
+    border: none; border-radius: 999px;
+    background: var(--ink); color: var(--on-ink); cursor: pointer;
+  }
+
+  /* Hero */
+  .lost {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    padding: 4rem 2.25rem;
+    align-items: center;
+  }
+  .lost-left { max-width: 480px; }
+  .four-oh-four {
+    font-family: var(--serif); font-size: 12rem;
+    line-height: 0.9; letter-spacing: -4px;
+    color: var(--accent); font-style: italic;
+    margin-bottom: 0.75rem;
+  }
+  .four-oh-four .o { display: inline-block; transform: translateY(-4px); }
+  .lost-title {
+    font-family: var(--serif); font-size: 40px;
+    letter-spacing: -1.2px; line-height: 1;
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+    text-wrap: balance;
+  }
+  .lost-title em { font-style: italic; color: var(--accent); }
+  .lost-sub {
+    font-size: 16px; color: var(--color-text-secondary);
+    line-height: 1.55; max-width: 380px;
+    text-wrap: pretty;
+    margin-bottom: 1.75rem;
+  }
+  .lost-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: var(--sans); font-size: 14px; font-weight: 500;
+    padding: 12px 22px; border-radius: 999px;
+    background: var(--accent); color: #fff;
+    border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 0.12s, box-shadow 0.15s;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.04), 0 4px 12px rgba(255,77,0,0.18);
+    text-decoration: none;
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-secondary {
+    font-family: var(--sans); font-size: 14px;
+    padding: 12px 22px; border-radius: 999px;
+    background: transparent;
+    border: 0.5px solid var(--color-border-primary);
+    color: var(--color-text-primary); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--color-background-secondary); }
+  .btn-secondary kbd {
+    font-family: var(--sans); font-size: 11px;
+    padding: 2px 6px; border-radius: 4px;
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+    margin: 0 2px;
+  }
+
+  /* Right side: broken flow diagram */
+  .lost-right {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    max-width: 460px;
+    margin: 0 auto;
+    background:
+      radial-gradient(120% 100% at 50% 50%, var(--accent-soft) 0%, transparent 55%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .broken-flow {
+    display: flex; flex-direction: column;
+    gap: 8px;
+    width: 70%;
+  }
+  .flow-step {
+    display: flex; align-items: center; gap: 11px;
+    padding: 12px 14px;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 11px;
+    font-size: 12.5px; color: var(--color-text-primary);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+  .flow-step.broken {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    transform: rotate(-3deg);
+  }
+  .flow-step .ico {
+    width: 26px; height: 26px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .flow-step.broken .ico { background: rgba(255,77,0,0.15); color: var(--accent); }
+  .flow-step .ico i { font-size: 14px; }
+  .flow-step.ok .ico { background: rgba(22,163,74,0.10); color: #16a34a; }
+  .flow-arrow {
+    text-align: center; color: var(--color-text-tertiary);
+    font-size: 11px;
+  }
+  .flow-arrow.broken { color: var(--accent); }
+
+  /* Helpful links */
+  .helpful {
+    padding: 2rem 2.25rem 3rem;
+    border-top: 0.5px solid var(--color-border-tertiary);
+  }
+  .helpful-title {
+    font-family: var(--serif); font-size: 24px;
+    letter-spacing: -0.5px;
+    margin-bottom: 1.25rem;
+  }
+  .helpful-title em { font-style: italic; color: var(--accent); }
+  .helpful-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .help-card {
+    padding: 1.25rem;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 14px;
+    transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+    background: var(--color-background-primary);
+    cursor: pointer;
+  }
+  .help-card:hover {
+    border-color: var(--color-border-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(20,18,14,0.06);
+  }
+  .help-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 0.75rem;
+  }
+  .help-card-title {
+    font-size: 13.5px; font-weight: 500; color: var(--color-text-primary);
+    margin-bottom: 4px;
+  }
+  .help-card-sub {
+    font-size: 12px; color: var(--color-text-secondary); line-height: 1.4;
+  }
+
+  @media (max-width: 860px) {
+    .lost { grid-template-columns: 1fr; padding: 2rem 1.25rem; gap: 2.5rem; }
+    .lost-right { display: none; }
+    .four-oh-four { font-size: 7rem; }
+    .lost-title { font-size: 32px; }
+    .helpful-grid { grid-template-columns: 1fr 1fr; }
+    .nav { padding: 1.1rem 1.25rem; }
+    .helpful { padding: 2rem 1.25rem 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <nav class="nav">
+    <a class="logo" href="Autoflow Marketplace.html">Auto<span>flow</span></a>
+    <ul class="nav-links">
+      <li><a href="Browse Workflows.html">Browse</a></li>
+      <li><a href="Creators.html">Creators</a></li>
+      <li>Pricing</li>
+      <li><a href="Blog.html">Blog</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-ghost">Sign in</button>
+      <button class="btn-solid">Get started</button>
+    </div>
+  </nav>
+
+  <section class="lost">
+    <div class="lost-left">
+      <div class="four-oh-four">4<span class="o">o</span>4</div>
+      <h1 class="lost-title">This page got lost in <em>automation</em></h1>
+      <p class="lost-sub">The workflow we tried to follow doesn't exist — or maybe a creator unpublished it. Either way, let's get you back to something useful.</p>
+      <div class="lost-actions">
+        <a class="btn-primary" href="Autoflow Marketplace.html">Take me home <i class="ti ti-arrow-right"></i></a>
+        <a class="btn-secondary" href="#" id="open-search">
+          <i class="ti ti-search"></i> Search
+          <kbd>⌘</kbd><kbd>K</kbd>
+        </a>
+      </div>
+    </div>
+
+    <div class="lost-right">
+      <div class="broken-flow">
+        <div class="flow-step ok">
+          <div class="ico"><i class="ti ti-bolt"></i></div>
+          <span>Workflow started</span>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step ok">
+          <div class="ico"><i class="ti ti-search"></i></div>
+          <span>Looking for page…</span>
+        </div>
+        <div class="flow-arrow broken">↓</div>
+        <div class="flow-step broken">
+          <div class="ico"><i class="ti ti-alert-triangle"></i></div>
+          <span>404 — not found</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="helpful">
+    <div class="helpful-title">Or try one of <em>these</em></div>
+    <div class="helpful-grid">
+      <a class="help-card" href="Browse Workflows.html">
+        <div class="help-icon"><i class="ti ti-grid-dots"></i></div>
+        <div class="help-card-title">Browse workflows</div>
+        <div class="help-card-sub">All 512 automations, filterable.</div>
+      </a>
+      <a class="help-card" href="Creators.html">
+        <div class="help-icon"><i class="ti ti-users"></i></div>
+        <div class="help-card-title">Meet the creators</div>
+        <div class="help-card-sub">The builders behind every flow.</div>
+      </a>
+      <a class="help-card" href="Blog.html">
+        <div class="help-icon"><i class="ti ti-news"></i></div>
+        <div class="help-card-title">Read the blog</div>
+        <div class="help-card-sub">Playbooks and postmortems.</div>
+      </a>
+      <a class="help-card" href="Autoflow Marketplace.html#become">
+        <div class="help-icon"><i class="ti ti-plus"></i></div>
+        <div class="help-card-title">Become a creator</div>
+        <div class="help-card-sub">Sell your workflows here.</div>
+      </a>
+    </div>
+  </section>
+</div>
+
+<script>
+  document.getElementById('open-search').addEventListener('click', e => {
+    e.preventDefault();
+    if (window.__autoflowOpenPalette) window.__autoflowOpenPalette();
+  });
+</script>
+
+<script src="browse-data.js"></script>
+<script src="creators-data.js"></script>
+<script src="autoflow-shared.js"></script>
+</body>
+</html>
