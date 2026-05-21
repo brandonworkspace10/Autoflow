@@ -765,10 +765,35 @@
     overlay.addEventListener('click', e => { if (e.target === overlay) dismiss(); });
   }
 
+  // ------------------------------------------------- Theme toggle ----------
+  function buildThemeToggle() {
+    const navRight = document.querySelector('.nav-right');
+    if (!navRight) return;
+    const btn = document.createElement('button');
+    btn.className = 'btn-ghost af-theme-toggle';
+    btn.setAttribute('aria-label', 'Toggle dark mode');
+    btn.style.cssText = 'width:36px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;';
+    function syncIcon() {
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      btn.innerHTML = dark
+        ? '<i class="ti ti-sun" style="font-size:16px"></i>'
+        : '<i class="ti ti-moon" style="font-size:16px"></i>';
+    }
+    syncIcon();
+    btn.addEventListener('click', () => {
+      const dark = document.documentElement.getAttribute('data-theme') !== 'dark';
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      try { localStorage.setItem('autoflow.theme', dark ? 'dark' : 'light'); } catch(e) {}
+      syncIcon();
+    });
+    navRight.insertBefore(btn, navRight.firstChild);
+  }
+
   // ---------------------------------------------------------------- boot ---
   function boot() {
     buildFooter();
     buildMobileNav();
+    buildThemeToggle();
     buildCmdK();
     maybeShowOnboarding();
   }

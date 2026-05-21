@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pricing — Autoflow</title>
+<meta name="description" content="Simple, transparent pricing for businesses that need automation systems and creators who build them." />
+<meta property="og:title" content="Pricing — Autoflow" />
+<meta property="og:description" content="Simple, transparent pricing for businesses that need automation systems and creators who build them." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.5.0/dist/tabler-icons.min.css" />
+
+<script>
+  (function () {
+    try {
+      if (!localStorage.getItem('autoflow.themeVersion')) {
+        localStorage.removeItem('autoflow.theme');
+        localStorage.setItem('autoflow.themeVersion', '2');
+      }
+      const saved = localStorage.getItem('autoflow.theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    } catch (e) {}
+  })();
+</script>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f6f5f1;
+    --color-background-tertiary: #efece4;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #6b6760;
+    --color-text-tertiary: #9a958c;
+    --color-border-primary: #d8d4cb;
+    --color-border-secondary: #e3dfd6;
+    --color-border-tertiary: #ece8df;
+    --accent: #FF4D00;
+    --accent-soft: rgba(255, 77, 0, 0.08);
+    --accent2: #0066FF;
+    --ink: #1a1a1a;
+    --on-ink: #ffffff;
+    --shadow-card-color: rgba(20, 18, 14, 0.04);
+    --shadow-hover-color: rgba(20, 18, 14, 0.06);
+  }
+  [data-theme="dark"] {
+    --color-background-primary: #14110d;
+    --color-background-secondary: #1c1814;
+    --color-background-tertiary: #24201a;
+    --color-text-primary: #f6f4ef;
+    --color-text-secondary: #a09a8e;
+    --color-text-tertiary: #6b6760;
+    --color-border-primary: #3a342c;
+    --color-border-secondary: #2a251f;
+    --color-border-tertiary: #221e18;
+    --accent-soft: rgba(255, 77, 0, 0.14);
+    --ink: #f6f4ef;
+    --on-ink: #14110d;
+    --shadow-card-color: rgba(0,0,0,0.4);
+    --shadow-hover-color: rgba(0,0,0,0.5);
+  }
+  :root {
+    --serif: 'Instrument Serif', 'Times New Roman', serif;
+    --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --shadow-card: 0 1px 0 var(--shadow-card-color), 0 1px 2px var(--shadow-card-color);
+    --shadow-hover: 0 4px 14px var(--shadow-hover-color), 0 1px 2px var(--shadow-card-color);
+  }
+
+  html, body { background: var(--color-background-primary); }
+  body {
+    font-family: var(--sans); color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .page { max-width: 1320px; margin: 0 auto; background: var(--color-background-primary); }
+
+  /* Nav */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 2.25rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .logo { font-family: var(--serif); font-size: 24px; letter-spacing: -0.5px; }
+  .logo span { color: var(--accent); font-style: italic; }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; color: var(--color-text-secondary); list-style: none; }
+  .nav-links li { cursor: pointer; transition: color 0.15s; }
+  .nav-links li:hover, .nav-links li.active { color: var(--color-text-primary); }
+  .nav-links li.active { font-weight: 500; }
+  .nav-right { display: flex; gap: 10px; }
+  .btn-ghost {
+    font-size: 13px; padding: 7px 16px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 999px; background: transparent;
+    color: var(--color-text-primary); cursor: pointer;
+  }
+  .btn-ghost:hover { background: var(--color-background-secondary); }
+  .btn-solid {
+    font-size: 13px; font-weight: 500; padding: 7px 16px;
+    border: none; border-radius: 999px;
+    background: var(--ink); color: var(--on-ink); cursor: pointer;
+  }
+  .btn-solid:hover { filter: brightness(1.15); }
+
+  /* Crumbs */
+  .crumbs {
+    padding: 1.5rem 2.25rem 0;
+    font-size: 11px; color: var(--color-text-tertiary);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .crumbs a:hover { color: var(--color-text-primary); }
+  .crumbs .sep { margin: 0 8px; opacity: 0.5; }
+
+  /* Header */
+  .head {
+    padding: 1.5rem 2.25rem 2.5rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    text-align: center;
+  }
+  .head-title {
+    font-family: var(--serif); font-size: clamp(40px, 5vw, 56px);
+    letter-spacing: -1.5px; line-height: 1; margin-bottom: 0.75rem;
+  }
+  .head-title em { font-style: italic; color: var(--accent); }
+  .head-sub {
+    font-size: 15px; color: var(--color-text-secondary);
+    max-width: 480px; margin: 0 auto 2rem; line-height: 1.55;
+  }
+
+  /* Audience toggle */
+  .audience-toggle {
+    display: inline-flex;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 999px;
+    padding: 4px;
+    gap: 2px;
+  }
+  .aud-btn {
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    padding: 8px 22px; border-radius: 999px; border: none;
+    background: transparent; color: var(--color-text-secondary);
+    cursor: pointer; transition: all 0.18s;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .aud-btn.active {
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    box-shadow: var(--shadow-card);
+  }
+  .aud-btn i { font-size: 15px; }
+
+  /* Pricing panels */
+  .pricing-panel { display: none; padding: 3rem 2.25rem; }
+  .pricing-panel.active { display: block; }
+
+  /* ---- BUYER PANEL ---- */
+  .buyer-intro {
+    text-align: center; max-width: 600px; margin: 0 auto 3rem;
+  }
+  .buyer-intro h2 {
+    font-family: var(--serif); font-size: 32px; letter-spacing: -0.8px;
+    margin-bottom: 0.6rem;
+  }
+  .buyer-intro h2 em { font-style: italic; color: var(--accent); }
+  .buyer-intro p { font-size: 15px; color: var(--color-text-secondary); line-height: 1.55; }
+
+  .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 900px; margin: 0 auto; }
+
+  .plan-card {
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 18px; padding: 1.75rem;
+    background: var(--color-background-primary);
+    display: flex; flex-direction: column; gap: 0;
+    position: relative;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .plan-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .plan-card.featured {
+    border-color: var(--accent);
+    background: radial-gradient(120% 100% at 100% 0%, rgba(255,77,0,0.06) 0%, transparent 55%),
+                var(--color-background-primary);
+  }
+  .plan-badge {
+    position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    background: var(--accent); color: #fff;
+    padding: 4px 14px; border-radius: 0 0 10px 10px;
+  }
+  .plan-name {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--color-text-tertiary); margin-bottom: 1rem;
+  }
+  .plan-price {
+    font-family: var(--serif); font-size: 48px; letter-spacing: -2px;
+    line-height: 1; color: var(--color-text-primary); margin-bottom: 4px;
+  }
+  .plan-price .currency { font-size: 24px; color: var(--color-text-secondary); vertical-align: super; font-style: normal; }
+  .plan-price .per { font-family: var(--sans); font-size: 13px; color: var(--color-text-tertiary); font-weight: 400; margin-left: 2px; }
+  .plan-desc {
+    font-size: 13px; color: var(--color-text-secondary); line-height: 1.5;
+    margin-bottom: 1.5rem; padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    flex: 1;
+  }
+  .plan-features { display: flex; flex-direction: column; gap: 9px; margin-bottom: 1.75rem; }
+  .plan-feature {
+    display: flex; align-items: flex-start; gap: 9px;
+    font-size: 13px; color: var(--color-text-secondary); line-height: 1.4;
+  }
+  .plan-feature i { color: var(--accent); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .plan-feature.dim i { color: var(--color-text-tertiary); }
+  .plan-feature.dim { color: var(--color-text-tertiary); }
+  .plan-cta {
+    font-family: var(--sans); font-size: 14px; font-weight: 500;
+    padding: 12px 0; border-radius: 12px; width: 100%;
+    cursor: pointer; border: none; text-align: center;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    transition: filter 0.15s, transform 0.12s;
+  }
+  .plan-cta.primary { background: var(--accent); color: #fff; box-shadow: 0 2px 0 rgba(0,0,0,0.04), 0 4px 12px rgba(255,77,0,0.18); }
+  .plan-cta.primary:hover { transform: translateY(-1px); }
+  .plan-cta.ink { background: var(--ink); color: var(--on-ink); }
+  .plan-cta.ink:hover { filter: brightness(1.15); }
+  .plan-cta.ghost { background: transparent; border: 0.5px solid var(--color-border-primary); color: var(--color-text-primary); }
+  .plan-cta.ghost:hover { background: var(--color-background-secondary); }
+
+  /* Setup add-on callout */
+  .setup-callout {
+    max-width: 900px; margin: 2rem auto 0;
+    padding: 1.5rem 2rem;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 16px;
+    background: var(--color-background-secondary);
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 1.5rem; align-items: center;
+  }
+  .setup-callout h3 {
+    font-family: var(--serif); font-size: 22px; letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .setup-callout h3 em { font-style: italic; color: var(--accent); }
+  .setup-callout p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; }
+  .setup-callout .price-note { font-size: 13px; color: var(--color-text-secondary); text-align: right; }
+  .setup-callout .price-note strong { display: block; font-family: var(--serif); font-size: 26px; letter-spacing: -0.6px; color: var(--color-text-primary); }
+
+  /* ---- CREATOR PANEL ---- */
+  .creator-intro {
+    text-align: center; max-width: 620px; margin: 0 auto 3rem;
+  }
+  .creator-intro h2 { font-family: var(--serif); font-size: 32px; letter-spacing: -0.8px; margin-bottom: 0.6rem; }
+  .creator-intro h2 em { font-style: italic; color: var(--accent); }
+  .creator-intro p { font-size: 15px; color: var(--color-text-secondary); line-height: 1.55; }
+
+  .creator-split {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    max-width: 900px; margin: 0 auto 3rem;
+  }
+  .split-card {
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 18px; padding: 1.75rem;
+    background: var(--color-background-primary);
+  }
+  .split-card.featured { border-color: var(--accent); background: radial-gradient(120% 100% at 100% 0%, rgba(255,77,0,0.06) 0%, transparent 55%), var(--color-background-primary); }
+  .split-eyebrow {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1.25rem;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .split-num {
+    font-family: var(--serif); font-size: 56px; letter-spacing: -2px; line-height: 1;
+    color: var(--color-text-primary); margin-bottom: 4px;
+  }
+  .split-num .unit { font-size: 28px; color: var(--accent); font-style: italic; }
+  .split-label { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.5rem; line-height: 1.5; }
+  .split-features { display: flex; flex-direction: column; gap: 9px; margin-bottom: 1.75rem; }
+  .split-feature { display: flex; align-items: flex-start; gap: 9px; font-size: 13px; color: var(--color-text-secondary); }
+  .split-feature i { color: var(--accent); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Revenue visual */
+  .revenue-bar {
+    margin: 0 auto 3rem; max-width: 900px;
+    padding: 2rem;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 18px;
+    background: var(--color-background-secondary);
+  }
+  .revenue-bar h3 { font-family: var(--serif); font-size: 22px; letter-spacing: -0.5px; margin-bottom: 1.25rem; }
+  .revenue-bar h3 em { font-style: italic; color: var(--accent); }
+  .rev-track { height: 10px; border-radius: 999px; background: var(--color-border-secondary); margin-bottom: 0.6rem; overflow: hidden; }
+  .rev-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), #ff7a00); width: 80%; }
+  .rev-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+  .rev-labels strong { color: var(--color-text-primary); font-weight: 500; }
+  .rev-examples { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .rev-ex {
+    padding: 12px 14px; border-radius: 12px;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+  .rev-ex .wf { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .rev-ex .sale { font-size: 12px; color: var(--color-text-secondary); }
+  .rev-ex .take { font-family: var(--serif); font-size: 22px; letter-spacing: -0.5px; color: var(--color-text-primary); }
+
+  /* Creator CTA */
+  .creator-cta-row { max-width: 900px; margin: 0 auto; display: flex; gap: 12px; align-items: center; }
+  .btn-creator-cta {
+    font-family: var(--sans); font-size: 14px; font-weight: 500;
+    padding: 13px 28px; border-radius: 999px;
+    background: var(--accent); color: #fff; border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.04), 0 4px 12px rgba(255,77,0,0.18);
+    transition: transform 0.12s;
+  }
+  .btn-creator-cta:hover { transform: translateY(-1px); }
+  .creator-cta-note { font-size: 12px; color: var(--color-text-tertiary); }
+
+  /* FAQ */
+  .faq-section { padding: 3rem 2.25rem; border-top: 0.5px solid var(--color-border-tertiary); }
+  .faq-title { font-family: var(--serif); font-size: 32px; letter-spacing: -0.8px; margin-bottom: 2rem; text-align: center; }
+  .faq-title em { font-style: italic; color: var(--accent); }
+  .faq-list { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; }
+  .faq-item { border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .faq-item:first-child { border-top: 0.5px solid var(--color-border-tertiary); }
+  .faq-q {
+    width: 100%; background: none; border: none; text-align: left;
+    font-family: var(--sans); font-size: 14px; font-weight: 500;
+    color: var(--color-text-primary); cursor: pointer;
+    padding: 1.1rem 0;
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  }
+  .faq-q .icon { color: var(--color-text-tertiary); font-size: 16px; flex-shrink: 0; transition: transform 0.2s; }
+  .faq-item.open .faq-q .icon { transform: rotate(45deg); }
+  .faq-a { font-size: 13.5px; color: var(--color-text-secondary); line-height: 1.65; max-height: 0; overflow: hidden; transition: max-height 0.25s ease, padding 0.2s; }
+  .faq-item.open .faq-a { max-height: 300px; padding-bottom: 1.1rem; }
+
+  /* Newsletter */
+  .nl-strip {
+    margin: 0 2.25rem 3rem;
+    padding: 2.5rem;
+    border-radius: 18px;
+    background: radial-gradient(120% 100% at 100% 0%, rgba(255,77,0,0.10) 0%, transparent 55%),
+                var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-secondary);
+    display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: center;
+  }
+  .nl-title { font-family: var(--serif); font-size: 28px; letter-spacing: -0.8px; line-height: 1.1; }
+  .nl-title em { font-style: italic; color: var(--accent); }
+  .nl-sub { margin-top: 0.4rem; font-size: 14px; color: var(--color-text-secondary); }
+  .nl-form {
+    display: flex; gap: 0;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 999px; padding: 4px 4px 4px 18px; min-width: 300px;
+  }
+  .nl-form:focus-within { border-color: var(--accent); }
+  .nl-form input { flex: 1; border: none; outline: none; background: transparent; color: var(--color-text-primary); font-family: var(--sans); font-size: 13px; }
+  .nl-form input::placeholder { color: var(--color-text-tertiary); }
+  .nl-form button {
+    border: none; cursor: pointer; background: var(--ink); color: var(--on-ink);
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    padding: 9px 16px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .nl-form button:hover { filter: brightness(1.15); }
+
+  .footer { padding: 1rem; }
+
+  @media (max-width: 900px) {
+    .plan-grid { grid-template-columns: 1fr; max-width: 420px; }
+    .creator-split { grid-template-columns: 1fr; }
+    .rev-examples { grid-template-columns: 1fr; }
+    .setup-callout { grid-template-columns: 1fr; }
+    .nl-strip { grid-template-columns: 1fr; }
+    .nl-form { min-width: 0; width: 100%; }
+  }
+  @media (max-width: 640px) {
+    .nav, .crumbs, .head, .pricing-panel, .faq-section, .nl-strip { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .nl-strip { margin-left: 1.25rem; margin-right: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <nav class="nav">
+    <a class="logo" href="Autoflow Marketplace.html">Auto<span>flow</span></a>
+    <ul class="nav-links">
+      <li><a href="Browse Workflows.html">Browse</a></li>
+      <li><a href="Creators.html">Creators</a></li>
+      <li class="active">Pricing</li>
+      <li><a href="Blog.html">Blog</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-ghost">Sign in</button>
+      <button class="btn-solid">Get started</button>
+    </div>
+  </nav>
+
+  <div class="crumbs"><a href="Autoflow Marketplace.html">Home</a><span class="sep">·</span>Pricing</div>
+
+  <header class="head">
+    <h1 class="head-title">Simple, <em>transparent</em> pricing</h1>
+    <p class="head-sub">Whether you're deploying automation systems for your business or building them for others — we've kept it clear.</p>
+    <div class="audience-toggle" role="tablist">
+      <button class="aud-btn active" data-panel="buyer" role="tab" aria-selected="true">
+        <i class="ti ti-building-store"></i> For businesses
+      </button>
+      <button class="aud-btn" data-panel="creator" role="tab" aria-selected="false">
+        <i class="ti ti-code"></i> For creators
+      </button>
+    </div>
+  </header>
+
+  <!-- BUYER PANEL -->
+  <div class="pricing-panel active" id="panel-buyer">
+    <div class="buyer-intro">
+      <h2>The <em>system</em> your business needs</h2>
+      <p>Buy individual workflows à la carte or grab a full business system bundle. Pay once, run forever — no subscriptions, no per-execution fees.</p>
+    </div>
+
+    <div class="plan-grid">
+      <div class="plan-card">
+        <div class="plan-name">Browse free</div>
+        <div class="plan-price">$<span class="per" style="font-family:var(--sans);font-size:22px;letter-spacing:0">0</span></div>
+        <div class="plan-desc">Explore every workflow, read the step breakdowns, save your wishlist — no account needed.</div>
+        <div class="plan-features">
+          <div class="plan-feature"><i class="ti ti-check"></i> Full browse access</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> Preview all workflow steps</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> Save to wishlist</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> Read all blog guides</div>
+          <div class="plan-feature dim"><i class="ti ti-minus"></i> Download templates</div>
+          <div class="plan-feature dim"><i class="ti ti-minus"></i> Creator setup help</div>
+        </div>
+        <button class="plan-cta ghost"><a href="Browse Workflows.html" style="color:inherit;text-decoration:none">Browse workflows</a></button>
+      </div>
+
+      <div class="plan-card featured">
+        <div class="plan-badge">Most popular</div>
+        <div class="plan-name">Per workflow</div>
+        <div class="plan-price"><span class="currency">$</span>19<span class="per">– $119</span></div>
+        <div class="plan-desc">Buy exactly the workflows your business needs. One-time payment, yours forever. Free workflows are always free.</div>
+        <div class="plan-features">
+          <div class="plan-feature"><i class="ti ti-check"></i> Instant template download</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> Step-by-step setup guide</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> Lifetime updates</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> Email support from creator</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> 14-day refund guarantee</div>
+          <div class="plan-feature dim"><i class="ti ti-minus"></i> Creator setup help</div>
+        </div>
+        <button class="plan-cta primary"><a href="Browse Workflows.html" style="color:inherit;text-decoration:none">Browse workflows <i class="ti ti-arrow-right"></i></a></button>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-name">System bundle</div>
+        <div class="plan-price"><span class="currency">$</span>199<span class="per">+</span></div>
+        <div class="plan-desc">Get the complete automation stack for your business type — lead gen, ops, finance, and more — bundled and pre-connected.</div>
+        <div class="plan-features">
+          <div class="plan-feature"><i class="ti ti-check"></i> 6–12 curated workflows</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> Pre-wired to work together</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> System setup guide</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> Lifetime updates on all flows</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> Priority creator support</div>
+          <div class="plan-feature"><i class="ti ti-check"></i> Optional creator setup add-on</div>
+        </div>
+        <button class="plan-cta ink">View bundles <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <div class="setup-callout">
+      <div>
+        <h3>Need someone to set it up <em>for you?</em></h3>
+        <p>Add Creator Setup to any workflow purchase. The creator who built it will configure it inside your actual tools — usually within 48 hours. No calls, no agency rates.</p>
+      </div>
+      <div class="price-note">
+        <strong>from $149</strong>
+        add-on per workflow
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATOR PANEL -->
+  <div class="pricing-panel" id="panel-creator">
+    <div class="creator-intro">
+      <h2>Build once, earn <em>forever</em></h2>
+      <p>List your automation workflows for free. Keep 80% of every sale. No upfront cost, no monthly fee — just build great flows and we'll handle the rest.</p>
+    </div>
+
+    <div class="creator-split">
+      <div class="split-card">
+        <div class="split-eyebrow"><i class="ti ti-template"></i> List workflows</div>
+        <div class="split-num">Free <span class="unit">∞</span></div>
+        <div class="split-label">No listing fee, ever. Submit as many workflows as you want.</div>
+        <div class="split-features">
+          <div class="split-feature"><i class="ti ti-check"></i> Unlimited workflow listings</div>
+          <div class="split-feature"><i class="ti ti-check"></i> Creator profile page</div>
+          <div class="split-feature"><i class="ti ti-check"></i> Install &amp; sales analytics</div>
+          <div class="split-feature"><i class="ti ti-check"></i> Buyer review system</div>
+          <div class="split-feature"><i class="ti ti-check"></i> Submission review within 48 h</div>
+        </div>
+        <button class="plan-cta ghost">Apply to become a creator</button>
+      </div>
+
+      <div class="split-card featured">
+        <div class="split-eyebrow"><i class="ti ti-star-filled"></i> Creator Setup</div>
+        <div class="split-num">Your <span class="unit">rate</span></div>
+        <div class="split-label">Offer a setup service on top of your templates. You set the price. We handle the booking and payment.</div>
+        <div class="split-features">
+          <div class="split-feature"><i class="ti ti-check"></i> You set your own setup fee</div>
+          <div class="split-feature"><i class="ti ti-check"></i> Autoflow matches buyer to you</div>
+          <div class="split-feature"><i class="ti ti-check"></i> 80% of setup fee to you</div>
+          <div class="split-feature"><i class="ti ti-check"></i> Scheduling &amp; brief handled for you</div>
+          <div class="split-feature"><i class="ti ti-check"></i> Protected by our buyer guarantee</div>
+        </div>
+        <button class="plan-cta primary">Enable Creator Setup <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <div class="revenue-bar">
+      <h3>You keep <em>80%</em> of every sale</h3>
+      <div class="rev-track"><div class="rev-fill"></div></div>
+      <div class="rev-labels"><span><strong>80%</strong> to you</span><span><strong>20%</strong> to Autoflow</span></div>
+      <div class="rev-examples">
+        <div class="rev-ex">
+          <div class="wf">$49 workflow</div>
+          <div class="sale">× 50 sales / month</div>
+          <div class="take">$1,960 <span style="font-family:var(--sans);font-size:12px;color:var(--color-text-tertiary)">/ mo</span></div>
+        </div>
+        <div class="rev-ex">
+          <div class="wf">$79 workflow</div>
+          <div class="sale">× 100 sales / month</div>
+          <div class="take">$6,320 <span style="font-family:var(--sans);font-size:12px;color:var(--color-text-tertiary)">/ mo</span></div>
+        </div>
+        <div class="rev-ex">
+          <div class="wf">$99 workflow</div>
+          <div class="sale">× 200 sales / month</div>
+          <div class="take">$15,840 <span style="font-family:var(--sans);font-size:12px;color:var(--color-text-tertiary)">/ mo</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="creator-cta-row">
+      <button class="btn-creator-cta">Apply to become a creator <i class="ti ti-arrow-up-right"></i></button>
+      <div class="creator-cta-note">No setup fee · Reviewed within 48 h · Instant payouts</div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <h2 class="faq-title">Common <em>questions</em></h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Do I need a subscription to buy workflows? <i class="ti ti-plus icon"></i></button>
+        <div class="faq-a">No. Every workflow is a one-time purchase. You pay once and own it forever — including all future updates the creator pushes. No monthly fees, no per-run costs on top.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What exactly is Creator Setup? <i class="ti ti-plus icon"></i></button>
+        <div class="faq-a">Creator Setup is an add-on where the creator who built the workflow configures it inside your actual stack — your Zapier account, your HubSpot, your Slack. They handle the mapping, credentials, and testing. Most setups are done within 48 hours. You don't need to be on a call if you don't want to be.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What tools do the workflows support? <i class="ti ti-plus icon"></i></button>
+        <div class="faq-a">Workflows are built on Zapier, Make (Integromat), or n8n — the three most widely used automation platforms. Each listing clearly shows which platform it runs on and which apps it integrates with, so you can filter for exactly your stack.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What is the refund policy? <i class="ti ti-plus icon"></i></button>
+        <div class="faq-a">Every workflow comes with a 14-day refund guarantee. If you can't get it running after following the setup guide and contacting the creator, we'll refund you — no questions asked.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How do creators get paid? <i class="ti ti-plus icon"></i></button>
+        <div class="faq-a">Payouts are processed via Stripe Connect. When a sale clears, 80% lands in your connected Stripe account automatically. There's no minimum threshold and no waiting period beyond Stripe's standard processing time (typically 2 business days).</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can I sell system bundles as a creator? <i class="ti ti-plus icon"></i></button>
+        <div class="faq-a">Yes — and we actively encourage it. Bundles have higher average order values and convert better because buyers can see the complete picture of what their business will look like after. You can group your own workflows into a bundle directly from your creator dashboard.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="nl-strip">
+    <div>
+      <div class="nl-title">Get the <em>weekly digest</em></div>
+      <div class="nl-sub">New workflows, creator interviews, tactics. Every Friday. No spam.</div>
+    </div>
+    <form class="nl-form" id="nl-form">
+      <input type="email" placeholder="you@company.com" required />
+      <button type="submit">Subscribe <i class="ti ti-arrow-right"></i></button>
+    </form>
+  </section>
+
+  <footer class="footer"></footer>
+</div>
+
+<script>
+  // Audience toggle
+  const audBtns = document.querySelectorAll('.aud-btn');
+  const panels = document.querySelectorAll('.pricing-panel');
+  audBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      audBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+      const target = btn.dataset.panel;
+      panels.forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + target).classList.add('active');
+    });
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Newsletter
+  document.getElementById('nl-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const input = e.target.querySelector('input');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) { input.focus(); return; }
+    const btn = e.target.querySelector('button');
+    btn.innerHTML = '<i class="ti ti-check"></i> Subscribed';
+    input.readOnly = true; input.value = '';
+    input.placeholder = "You're on the list — see you Friday";
+  });
+</script>
+
+<script src="browse-data.js"></script>
+<script src="creators-data.js"></script>
+<script src="autoflow-shared.js"></script>
+</body>
+</html>

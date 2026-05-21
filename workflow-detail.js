@@ -57,6 +57,30 @@
     ? 'One-click install · no card required'
     : 'One-time purchase · keep forever';
 
+  // Tier pricing
+  const setupPrice = isFree ? 149 : wf.price + Math.ceil(wf.price * 2 / 10) * 10 + 100;
+  const diyEl = document.getElementById('tier-diy-price');
+  const setupEl = document.getElementById('tier-setup-price');
+  if (diyEl) diyEl.textContent = isFree ? 'Free' : '$' + wf.price;
+  if (setupEl) setupEl.textContent = '$' + setupPrice;
+
+  // Tier selector interaction
+  document.querySelectorAll('.ic-tier').forEach(tier => {
+    tier.addEventListener('click', () => {
+      document.querySelectorAll('.ic-tier').forEach(t => t.classList.remove('active'));
+      tier.classList.add('active');
+      const noteEl = document.getElementById('install-note');
+      const btn = document.getElementById('open-install');
+      if (tier.dataset.tier === 'setup') {
+        if (noteEl) noteEl.textContent = 'Creator will reach out within 24 h to schedule your setup call';
+        if (btn) btn.innerHTML = '<i class="ti ti-headset"></i> Get workflow + Setup';
+      } else {
+        if (noteEl) noteEl.textContent = isFree ? 'One-click install · no card required' : 'One-time purchase · keep forever';
+        if (btn) btn.innerHTML = '<i class="ti ti-download"></i> Get workflow';
+      }
+    });
+  });
+
   // Overview — expand the short desc into 2 paragraphs
   document.getElementById('overview').innerHTML = `
     <p>${wf.desc}</p>
